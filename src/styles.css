@@ -1,0 +1,142 @@
+/* PrimeNG v17 theme and icons */
+@import 'primeng/resources/primeng.min.css';
+@import 'primeng/resources/themes/lara-light-blue/theme.css';
+@import 'primeicons/primeicons.css';
+
+:root {
+  color-scheme: light;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Arial, sans-serif;
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  min-height: 100%;
+  overflow-x: hidden;
+  background: #f3f6fb;
+  color: #1f2937;
+}
+
+app-root {
+  display: block;
+  width: 100%;
+  min-height: 100vh;
+  min-height: 100dvh;
+}
+
+/* Leaflet map */
+.leaflet-container {
+  background: #1a2b3a;
+  font-family: 'Inter', sans-serif;
+  outline: none;
+}
+
+.leaflet-control-zoom {
+  display: none !important;
+}
+
+.leaflet-control-attribution {
+  background: rgba(255, 255, 255, 0.82) !important;
+  color: #333 !important;
+  font-size: 10px !important;
+  padding: 2px 6px !important;
+  border-radius: 4px 0 0 0 !important;
+}
+.leaflet-control-attribution a {
+  color: #1976d2 !important;
+}
+
+.leaflet-bar {
+  border: none !important;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2) !important;
+}
+
+/* GPS marker */
+.gps-marker-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  background: #16a34a;
+  border: 3px solid #ffffff;
+  border-radius: 50% 50% 50% 0;
+  transform: rotate(-45deg);
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.4);
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+.gps-marker-icon:hover {
+  transform: rotate(-45deg) scale(1.1);
+}
+.gps-marker-icon.selected {
+  background: #2563eb;
+  box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.3), 0 4px 10px rgba(0, 0, 0, 0.4);
+}
+.gps-marker-icon span {
+  transform: rotate(45deg);
+  color: white;
+  font-size: 10px;
+  font-weight: 700;
+  user-select: none;
+}
+
+@keyframes pulse-ring {
+  0% {
+    transform: rotate(-45deg) scale(0.9);
+    opacity: 0.7;
+  }
+  70% {
+    transform: rotate(-45deg) scale(1.6);
+    opacity: 0;
+  }
+  100% {
+    transform: rotate(-45deg) scale(0.9);
+    opacity: 0;
+  }
+}
+.gps-marker-pulse {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 32px;
+  height: 32px;
+  border-radius: 50% 50% 50% 0;
+  background: #2563eb;
+  animation: pulse-ring 1.6s cubic-bezier(0.215, 0.61, 0.355, 1) infinite;
+  pointer-events: none;
+}
+
+/* Leaflet popup */
+.leaflet-popup-content-wrapper {
+  border-radius: 8px !important;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2) !important;
+}
+.leaflet-popup-content {
+  margin: 12px 16px !important;
+  font-family: 'Inter', sans-serif !important;
+  font-size: 13px !important;
+  line-height: 1.5 !important;
+}
+
+/* PrimeNG layer menu */
+.layer-menu-popup .p-menu {
+  width: 200px;
+  overflow: hidden;
+  border: 1px solid #e8edf4;
+  border-radius: 12px;
+  box-shadow: 0 14px 32px rgba(17, 35, 61, 0.18);
+}
+.layer-menu-popup .p-menu-item-link {
+  padding: 10px 13px;
+}

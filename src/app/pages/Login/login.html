@@ -1,0 +1,66 @@
+<p-toast position="top-right"></p-toast>
+<app-selector-idiomas></app-selector-idiomas>
+
+<main class="auth-page">
+  <section class="auth-card" aria-label="Inicio de sesión">
+    <a class="auth-brand" [routerLink]="['/']" aria-label="FixTrack GPS inicio">
+      <span class="brand-mark"><i class="pi pi-map-marker"></i></span>
+      <span>FixTrack<span class="brand-accent">GPS</span></span>
+    </a>
+
+    <header class="card-heading">
+      <h1>Inicia sesión</h1>
+      <p>Ingresa tus datos para acceder a tu cuenta.</p>
+    </header>
+
+    <form class="auth-form" (ngSubmit)="validarInicio()">
+      <label for="login-username">Usuario</label>
+      <span class="field-wrap">
+        <i class="pi pi-user field-icon"></i>
+        <input
+          id="login-username"
+          pInputText
+          type="text"
+          name="nombreUsuario"
+          placeholder="Tu nombre de usuario"
+          [(ngModel)]="nombreUsuario"
+          autocomplete="username"
+          required
+        />
+      </span>
+
+      <label for="login-password">Contraseña</label>
+      <span class="field-wrap">
+        <i class="pi pi-lock field-icon"></i>
+        <input
+          id="login-password"
+          pInputText
+          [type]="mask ? 'text' : 'password'"
+          name="contrasena"
+          placeholder="Tu contraseña"
+          [(ngModel)]="contrasena"
+          autocomplete="current-password"
+          required
+        />
+        <button
+          class="password-toggle"
+          type="button"
+          (click)="mask = !mask"
+          [attr.aria-label]="mask ? 'Ocultar contraseña' : 'Mostrar contraseña'"
+        >
+          <i class="pi" [class.pi-eye]="mask" [class.pi-eye-slash]="!mask"></i>
+        </button>
+      </span>
+
+      <button pButton type="submit" class="submit-button">
+        <span>Iniciar sesión</span>
+        <i class="pi pi-arrow-right"></i>
+      </button>
+    </form>
+
+    <p class="auth-switch">
+      ¿No tienes cuenta?
+      <a [routerLink]="['/register']">Regístrate</a>
+    </p>
+  </section>
+</main>

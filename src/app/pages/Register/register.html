@@ -1,0 +1,106 @@
+<p-toast position="top-right"></p-toast>
+<app-selector-idiomas></app-selector-idiomas>
+
+<main class="register-page">
+  <section class="register-card" aria-label="Crear cuenta">
+    <a class="brand-link" [routerLink]="['/']">
+      <span class="brand-mark"><i class="pi pi-map-marker"></i></span>
+      <span>FixTrack<span class="brand-accent">GPS</span></span>
+    </a>
+
+    <a class="back-link" [routerLink]="['/']">
+      <i class="pi pi-arrow-left"></i>
+      Volver al acceso
+    </a>
+
+    <header class="card-heading">
+      <h1>Crea tu cuenta</h1>
+      <p>Completa tus datos para comenzar.</p>
+    </header>
+
+    <form class="register-form" (ngSubmit)="validarRegistro()">
+      <label for="register-username">Nombre de usuario</label>
+      <span class="field-wrap">
+        <i class="pi pi-user field-icon"></i>
+        <input
+          id="register-username"
+          pInputText
+          type="text"
+          name="nombreUsuario"
+          placeholder="Ej. maria.garcia"
+          [(ngModel)]="nombreUsuario"
+          autocomplete="username"
+          required
+        />
+      </span>
+
+      <label for="register-email">Correo electrónico</label>
+      <span class="field-wrap">
+        <i class="pi pi-envelope field-icon"></i>
+        <input
+          id="register-email"
+          pInputText
+          type="email"
+          name="email"
+          placeholder="nombre@empresa.com"
+          [(ngModel)]="email"
+          autocomplete="email"
+          required
+        />
+      </span>
+
+      <label for="register-password">Contraseña</label>
+      <span class="field-wrap">
+        <i class="pi pi-lock field-icon"></i>
+        <input
+          id="register-password"
+          pInputText
+          [type]="mask ? 'text' : 'password'"
+          name="contrasena"
+          placeholder="Crea una contraseña"
+          [(ngModel)]="contrasena"
+          autocomplete="new-password"
+          required
+        />
+        <button
+          class="password-toggle"
+          type="button"
+          (click)="mask = !mask"
+          [attr.aria-label]="mask ? 'Ocultar contraseña' : 'Mostrar contraseña'"
+        >
+          <i class="pi" [class.pi-eye]="mask" [class.pi-eye-slash]="!mask"></i>
+        </button>
+      </span>
+
+      <label for="register-confirm-password">Confirmar contraseña</label>
+      <span class="field-wrap">
+        <i class="pi pi-lock field-icon"></i>
+        <input
+          id="register-confirm-password"
+          pInputText
+          [type]="mask1 ? 'text' : 'password'"
+          name="confirmarContrasena"
+          placeholder="Escribe de nuevo tu contraseña"
+          [(ngModel)]="confirmarContrasena"
+          autocomplete="new-password"
+          required
+        />
+        <button
+          class="password-toggle"
+          type="button"
+          (click)="mask1 = !mask1"
+          [attr.aria-label]="mask1 ? 'Ocultar contraseña' : 'Mostrar contraseña'"
+        >
+          <i class="pi" [class.pi-eye]="mask1" [class.pi-eye-slash]="!mask1"></i>
+        </button>
+      </span>
+
+      <button pButton type="submit" class="submit-button">
+        <span>Crear cuenta</span>
+        <i class="pi pi-arrow-right"></i>
+      </button>
+    </form>
+
+    <p class="auth-switch">¿Ya tienes cuenta? <a [routerLink]="['/']">Inicia sesión</a></p>
+  </section>
+</main>
