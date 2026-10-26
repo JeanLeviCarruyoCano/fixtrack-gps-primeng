@@ -15,8 +15,8 @@ export const GPS_DEVICES: GpsDevice[] = [
   {
     id: 'mx041',
     label: 'mx041',
-    lat: 19.3426,
-    lng: -71.0703,
+    lat: -1.0438,
+    lng: -80.4559,
     speed: 0,
     heading: 0,
     status: 'idle',
@@ -27,8 +27,8 @@ export const GPS_DEVICES: GpsDevice[] = [
   {
     id: 'mex111',
     label: 'mex111',
-    lat: 19.3480,
-    lng: -71.0520,
+    lat: -1.0387,
+    lng: -80.4486,
     speed: 42,
     heading: 135,
     status: 'online',
@@ -39,8 +39,8 @@ export const GPS_DEVICES: GpsDevice[] = [
   {
     id: 'mx072',
     label: 'mx072',
-    lat: 19.3300,
-    lng: -71.0900,
+    lat: -1.0513,
+    lng: -80.4638,
     speed: 0,
     heading: 0,
     status: 'offline',
@@ -51,8 +51,8 @@ export const GPS_DEVICES: GpsDevice[] = [
   {
     id: 'mx205',
     label: 'mx205',
-    lat: 19.3600,
-    lng: -71.0400,
+    lat: -1.0345,
+    lng: -80.4602,
     speed: 78,
     heading: 270,
     status: 'online',

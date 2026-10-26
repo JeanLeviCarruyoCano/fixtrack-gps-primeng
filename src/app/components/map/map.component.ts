@@ -40,10 +40,10 @@ export class MapComponent implements AfterViewInit, OnDestroy {
 
   private readonly satelliteTiles =
     'https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}';
-  private readonly streetTiles =
-    'https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png';
+  private readonly streetTiles = 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png';
   private readonly terrainTiles =
     'https://{s}.tile.opentopomap.org/{z}/{x}/{y}.png';
+  private readonly defaultCenter: L.LatLngExpression = [-1.0438, -80.4559];
 
   constructor() {
     // React to layer changes
@@ -81,23 +81,22 @@ export class MapComponent implements AfterViewInit, OnDestroy {
       if (tick === 0 || !this.map) return;
       const dev = this.gps.selectedDevice();
       if (dev) this.map.flyTo([dev.lat, dev.lng], 15, { duration: 0.8 });
-      else this.map.flyTo([19.3426, -71.0703], 12, { duration: 0.8 });
+      else this.map.flyTo(this.defaultCenter, 13, { duration: 0.8 });
     });
   }
 
   ngAfterViewInit(): void {
     this.map = L.map(this.mapEl().nativeElement, {
-      center: [19.3426, -71.0703],
-      zoom: 12,
+      center: this.defaultCenter,
+      zoom: 13,
       zoomControl: false,
       attributionControl: true,
       worldCopyJump: true,
     });
 
-    this.tileLayer = L.tileLayer(this.satelliteTiles, {
+    this.tileLayer = L.tileLayer(this.streetTiles, {
       maxZoom: 19,
-      attribution:
-        '&copy; <a href="https://www.google.com/maps">Google</a> &copy; Esri, Maxar, Earthstar Geographics',
+      attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
     }).addTo(this.map);
 
     // Custom scale bar (bottom-left, like Google Maps)
@@ -118,9 +117,9 @@ export class MapComponent implements AfterViewInit, OnDestroy {
         : this.terrainTiles;
     const attribution =
       layer === 'satellite'
-        ? '&copy; <a href="https://www.google.com/maps">Google</a> &copy; Esri, Maxar, Earthstar Geographics'
+        ? 'Tiles &copy; Esri, Maxar, Earthstar Geographics'
         : layer === 'streets'
-        ? '&copy; OpenStreetMap, &copy; CARTO'
+        ? '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
         : '&copy; OpenStreetMap, &copy; OpenTopoMap';
     this.tileLayer = L.tileLayer(url, { maxZoom: 19, attribution }).addTo(this.map);
   }
@@ -145,21 +144,21 @@ export class MapComponent implements AfterViewInit, OnDestroy {
       const icon = L.divIcon({
         className: 'gps-marker-wrapper',
         html: `
-          <div style="position:relative;">
-            ${isSelected ? '<div class="gps-marker-pulse"></div>' : ''}
-            <div class="gps-marker-icon ${isSelected ? 'selected' : ''}">
-              <span>${device.label}</span>
+          <div class="gps-marker-container">
+            <span class="gps-marker ${isSelected ? 'selected' : ''} status-${device.status}">
+              <i class="pi pi-car"></i>
             </div>
+            <span class="gps-marker-label">${device.label}</span>
           </div>
         `,
-        iconSize: [32, 32],
-        iconAnchor: [16, 32],
-        popupAnchor: [0, -32],
+        iconSize: [80, 54],
+        iconAnchor: [40, 27],
+        popupAnchor: [0, -27],
       });
 
       let marker = this.markers.get(device.id);
       if (!marker) {
-        marker = L.marker([device.lat, device.lng], { icon }).addTo(this.map);
+        marker = L.marker([device.lat, device.lng], { icon, title: `GPS ${device.label}` }).addTo(this.map);
         marker.on('click', () => this.gps.select(device.id));
         this.markers.set(device.id, marker);
       } else {

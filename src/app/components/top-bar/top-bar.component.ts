@@ -27,10 +27,6 @@ import { GpsService } from '../../services/gps.service';
         ></p-badge>
       </div>
 
-      <div class="brand">
-        <i class="pi pi-map-marker brand-logo"></i>
-        <span class="brand-name">FixTrack<strong>GPS</strong></span>
-      </div>
     </div>
   `,
   styles: [
@@ -42,7 +38,7 @@ import { GpsService } from '../../services/gps.service';
         z-index: 1000;
         display: flex;
         align-items: center;
-        gap: 10px;
+        gap: 0;
       }
 
       .menu-btn-wrapper {
@@ -79,37 +75,6 @@ import { GpsService } from '../../services/gps.service';
         z-index: 1;
       }
 
-      .brand {
-        display: flex;
-        align-items: center;
-        gap: 9px;
-        padding: 11px 15px;
-        border: 1px solid rgba(225, 232, 240, 0.9);
-        background: rgba(255, 255, 255, 0.96);
-        border-radius: 13px;
-        box-shadow: 0 6px 18px rgba(20, 39, 65, 0.13);
-      }
-      .brand-logo {
-        display: grid;
-        width: 27px;
-        height: 27px;
-        place-items: center;
-        border-radius: 9px;
-        background: #eaf1ff;
-        color: #2563eb;
-        font-size: 14px;
-      }
-      .brand-name {
-        font-size: 14px;
-        font-weight: 500;
-        color: #1d3049;
-        letter-spacing: 0.2px;
-      }
-      .brand-name strong {
-        color: #3978f6;
-        font-weight: 700;
-      }
-
       @media (max-width: 540px) {
         .top-bar {
           top: 11px;
@@ -122,9 +87,6 @@ import { GpsService } from '../../services/gps.service';
           height: 40px !important;
         }
 
-        .brand {
-          padding: 7px 10px;
-        }
       }
     `,
   ],

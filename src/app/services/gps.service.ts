@@ -16,7 +16,7 @@ export class GpsService {
   private readonly _menuOpen = signal<boolean>(false);
 
   /** Map layer type */
-  private readonly _layer = signal<'satellite' | 'streets' | 'terrain'>('satellite');
+  private readonly _layer = signal<'satellite' | 'streets' | 'terrain'>('streets');
 
   // Public read-only signals
   readonly devices = this._devices.asReadonly();

@@ -44,7 +44,7 @@ src/
     │   ├── gps.service.ts              # Estado global con signals (selección, vista, menú, capa)
     │   └── map-command.service.ts      # Bus de comandos zoom/recenter
     └── components/
-        ├── map/                        # Leaflet con tiles satelitales + marcadores custom
+        ├── map/                        # Leaflet con OpenStreetMap y marcadores de vehículos
         ├── top-bar/                    # p-button + p-badge (menú + notificaciones)
         ├── side-menu/                  # p-sidebar + p-badge (drawer navegación)
         ├── gps-selector/               # p-dropdown con templates (status dot, velocidad)
@@ -60,7 +60,7 @@ src/
 | Framework | Angular 17.3 (standalone + signals + `viewChild`) |
 | UI library | PrimeNG 17.18 (`lara-light-blue` theme) |
 | Iconos | PrimeIcons 8 |
-| Mapa | Leaflet 1.9 + tiles Esri World Imagery (satélite), CARTO Voyager (calles), OpenTopoMap (terreno) |
+| Mapa | Leaflet 1.9 + OpenStreetMap (calles, sin clave API), Esri World Imagery (satélite), OpenTopoMap (terreno) |
 | Tipografía | Inter (Google Fonts) |
 | Animaciones | `@angular/platform-browser/animations/async` |
 

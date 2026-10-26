@@ -157,7 +157,7 @@ export class MapControlsComponent {
       command: () => this.gps.setLayer('satellite'),
     },
     {
-      label: 'Mapa',
+      label: 'OpenStreetMap',
       icon: 'pi pi-map',
       command: () => this.gps.setLayer('streets'),
     },

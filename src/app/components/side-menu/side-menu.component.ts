@@ -27,13 +27,14 @@ interface MenuItem {
       [modal]="true"
       [dismissible]="true"
       [showCloseIcon]="false"
+      appendTo="body"
       [style]="{ width: '320px' }"
       styleClass="app-sidebar"
     >
       <ng-template pTemplate="header">
         <div class="header">
           <div class="brand-row">
-            <i class="pi pi-broadcast brand-logo"></i>
+            <span class="brand-mark"><i class="pi pi-map-marker brand-logo"></i></span>
             <span class="brand-name">FixTrack<strong>GPS</strong></span>
           </div>
         </div>
@@ -99,27 +100,11 @@ interface MenuItem {
   `,
   styles: [
     `
-      :host ::ng-deep .app-sidebar {
-        background: #ffffff !important;
-        box-shadow: 18px 0 50px rgba(17, 35, 61, 0.2);
-      }
-      :host ::ng-deep .app-sidebar .p-sidebar-header {
-        padding: 0 !important;
-        border-bottom: none !important;
-      }
-      :host ::ng-deep .app-sidebar .p-sidebar-content {
-        padding: 0 !important;
-      }
-      :host ::ng-deep .app-sidebar .p-sidebar-footer {
-        padding: 14px 16px !important;
-        border-top: 1px solid #e5e7eb;
-      }
-
       .header {
-        min-height: 76px;
-        padding: 18px 20px;
-        background: linear-gradient(125deg, #173565, #2455a1);
-        color: white;
+        min-height: 78px;
+        padding: 17px 20px;
+        background: #ffffff;
+        color: #1d3049;
         display: flex;
         align-items: center;
         justify-content: space-between;
@@ -127,16 +112,28 @@ interface MenuItem {
       .brand-row {
         display: flex;
         align-items: center;
-        gap: 10px;
+        gap: 11px;
+      }
+      .brand-mark {
+        display: grid;
+        width: 34px;
+        height: 34px;
+        place-items: center;
+        border: 1px solid #e5ebf5;
+        border-radius: 11px;
+        background: #f3f6fb;
       }
       .brand-logo {
-        font-size: 22px;
+        color: #3978f6;
+        font-size: 16px;
       }
       .brand-name {
-        font-size: 18px;
+        color: #1d3049;
+        font-size: 17px;
         font-weight: 500;
       }
       .brand-name strong {
+        color: #3978f6;
         font-weight: 700;
       }
 
