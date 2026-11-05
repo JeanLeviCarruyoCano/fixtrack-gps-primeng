@@ -1,0 +1,84 @@
+.moderator {
+  position: fixed;
+  top: 40%;
+  left: 0;
+  z-index: 1000;
+  display: flex;
+  align-items: flex-start;
+}
+
+:host ::ng-deep .tab-btn {
+  gap: 0.4rem;
+  padding: 0.75rem 0.4rem;
+  border-radius: 0 10px 10px 0;
+  writing-mode: vertical-rl;
+  transform: rotate(180deg);
+  font-size: 0.75rem;
+}
+
+.dot {
+  width: 0.5rem;
+  height: 0.5rem;
+  border-radius: 50%;
+  background: var(--text-muted);
+}
+.dot.recording {
+  background: var(--status-offline);
+}
+
+.body {
+  display: block;
+  width: min(340px, 86vw);
+  max-height: 58vh;
+  overflow: auto;
+}
+
+.head {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.4rem;
+  padding: 1rem 1rem 0;
+  color: var(--text-primary);
+}
+
+h3 {
+  margin: 0 0 0.5rem;
+  color: var(--text-primary);
+  font-size: 0.9375rem;
+}
+
+.field {
+  display: block;
+  margin: 0.6rem 0 0.25rem;
+  color: var(--text-secondary);
+  font-size: 0.8125rem;
+  font-weight: 600;
+}
+
+.instruction {
+  margin: 0.6rem 0 0.25rem;
+  color: var(--text-primary);
+}
+.meta {
+  margin: 0 0 0.6rem;
+  color: var(--text-secondary);
+  font-size: 0.8125rem;
+}
+
+.outcomes {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  margin-top: 0.6rem;
+}
+
+input {
+  width: 100%;
+  margin-bottom: 0.6rem;
+}
+
+:host ::ng-deep p-dropdown,
+:host ::ng-deep .p-dropdown {
+  width: 100%;
+}

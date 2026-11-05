@@ -1,0 +1,211 @@
+<p-dialog
+  header="Alertas"
+  [visible]="isOpen('alerts')"
+  (visibleChange)="onVisibleChange('alerts', $event)"
+  [modal]="true"
+  [draggable]="false"
+  [resizable]="false"
+  [dismissableMask]="true"
+  appendTo="body"
+  styleClass="app-dialog app-pn"
+  [style]="{ width: 'min(520px, 94vw)' }"
+>
+  @if (alerts().length === 0) {
+    <p-message severity="success" text="No hay alertas activas. Todos los vehículos operan con normalidad."></p-message>
+  } @else {
+    <p-message [severity]="criticalCount() > 0 ? 'error' : 'warn'" [text]="summaryText()" role="status"></p-message>
+    <ul class="alert-list">
+      @for (alert of alerts(); track alert.id; let last = $last) {
+        <li class="alert">
+          <div class="alert-head">
+            <p-tag
+              [severity]="alert.severity === 'critica' ? 'danger' : 'warning'"
+              [icon]="alert.severity === 'critica' ? 'pi pi-exclamation-triangle' : 'pi pi-info-circle'"
+              [value]="alert.severity === 'critica' ? 'Crítica' : 'Aviso'"
+            ></p-tag>
+            <app-status-badge [status]="alert.status"></app-status-badge>
+            <span class="when">{{ ago(alert.since) }}</span>
+          </div>
+          <strong class="alert-title">{{ alert.title }}</strong>
+          <p class="alert-detail">{{ alert.detail }}</p>
+          <p-button
+            label="Ver en el mapa"
+            icon="pi pi-map-marker"
+            [text]="true"
+            size="small"
+            [attr.data-track]="'alerta-ver-' + alert.deviceId"
+            (onClick)="showOnMap(alert)"
+          ></p-button>
+          @if (!last) {
+            <p-divider></p-divider>
+          }
+        </li>
+      }
+    </ul>
+  }
+</p-dialog>
+
+<p-dialog
+  header="Configuración"
+  [visible]="isOpen('settings')"
+  (visibleChange)="onVisibleChange('settings', $event)"
+  [modal]="true"
+  [draggable]="false"
+  [resizable]="false"
+  [dismissableMask]="true"
+  appendTo="body"
+  styleClass="app-dialog app-pn"
+  [style]="{ width: 'min(620px, 94vw)' }"
+>
+  <p-fieldset legend="Tamaño de letra">
+    <p-selectButton
+      class="full"
+      data-track="ajuste-letra"
+      [options]="fontSizes"
+      optionLabel="label"
+      optionValue="value"
+      [allowEmpty]="false"
+      [ngModel]="settings().fontSize"
+      (ngModelChange)="set('fontSize', $event)"
+    ></p-selectButton>
+  </p-fieldset>
+
+  <p-fieldset legend="Tema">
+    <div class="choices" role="radiogroup" aria-label="Tema">
+      @for (o of themes; track o.value) {
+        <div class="choice" [attr.data-track]="'ajuste-tema-' + o.value">
+          <p-radioButton
+            name="theme"
+            [inputId]="'theme-' + o.value"
+            [value]="o.value"
+            [ngModel]="settings().theme"
+            (ngModelChange)="set('theme', $event)"
+          ></p-radioButton>
+          <label [for]="'theme-' + o.value">
+            <span class="opt-label">{{ o.label }}</span>
+            <span class="opt-hint">{{ o.hint }}</span>
+          </label>
+        </div>
+      }
+    </div>
+  </p-fieldset>
+
+  <p-fieldset legend="Paleta de colores">
+    <p-selectButton
+      class="full"
+      data-track="ajuste-paleta"
+      [options]="palettes"
+      optionLabel="label"
+      optionValue="value"
+      [allowEmpty]="false"
+      [ngModel]="settings().palette"
+      (ngModelChange)="set('palette', $event)"
+    >
+      <ng-template let-o pTemplate="item">
+        <span class="swatch" [style.background]="o.swatch" aria-hidden="true"></span>
+        <span>{{ o.label }}</span>
+      </ng-template>
+    </p-selectButton>
+  </p-fieldset>
+
+  <p-fieldset legend="Modo para daltonismo">
+    <div class="choices" role="radiogroup" aria-label="Modo para daltonismo">
+      @for (o of colorBlindModes; track o.value) {
+        <div class="choice" [attr.data-track]="'ajuste-daltonismo-' + o.value">
+          <p-radioButton
+            name="colorBlind"
+            [inputId]="'cb-' + o.value"
+            [value]="o.value"
+            [ngModel]="settings().colorBlind"
+            (ngModelChange)="set('colorBlind', $event)"
+          ></p-radioButton>
+          <label [for]="'cb-' + o.value">
+            <span class="opt-label">{{ o.label }}</span>
+            <span class="opt-hint">{{ o.hint }}</span>
+          </label>
+        </div>
+      }
+    </div>
+    <p-divider></p-divider>
+    <div class="preview" aria-label="Vista previa de los estados">
+      <span class="preview-title">Vista previa:</span>
+      <app-status-badge status="online"></app-status-badge>
+      <app-status-badge status="idle"></app-status-badge>
+      <app-status-badge status="offline"></app-status-badge>
+    </div>
+  </p-fieldset>
+
+  <p-fieldset legend="Movimiento">
+    <div class="choice" data-track="ajuste-reducir-movimiento">
+      <p-inputSwitch
+        inputId="reduce-motion"
+        [ngModel]="settings().reduceMotion"
+        (ngModelChange)="set('reduceMotion', $event)"
+      ></p-inputSwitch>
+      <label for="reduce-motion">
+        <span class="opt-label">Reducir animaciones</span>
+        <span class="opt-hint">Desactiva las transiciones del panel y del mapa.</span>
+      </label>
+    </div>
+  </p-fieldset>
+
+  <ng-template pTemplate="footer">
+    <span class="note">Los ajustes se guardan en este dispositivo.</span>
+    <p-button
+      label="Restablecer"
+      icon="pi pi-refresh"
+      severity="secondary"
+      [outlined]="true"
+      data-track="ajustes-restablecer"
+      (onClick)="reset()"
+    ></p-button>
+  </ng-template>
+</p-dialog>
+
+<p-dialog
+  header="Ayuda"
+  [visible]="isOpen('help')"
+  (visibleChange)="onVisibleChange('help', $event)"
+  [modal]="true"
+  [draggable]="false"
+  [resizable]="false"
+  [dismissableMask]="true"
+  appendTo="body"
+  styleClass="app-dialog app-pn"
+  [style]="{ width: 'min(580px, 94vw)' }"
+>
+  <h3>Guía rápida</h3>
+  <p-accordion>
+    @for (t of helpTopics; track t.title) {
+      <p-accordionTab [header]="t.title">
+        <p class="topic-body">{{ t.body }}</p>
+      </p-accordionTab>
+    }
+  </p-accordion>
+
+  <p-divider></p-divider>
+
+  <h3>Estados del vehículo</h3>
+  <ul class="legend">
+    @for (l of statusLegend; track l.status) {
+      <li>
+        <app-status-badge [status]="l.status"></app-status-badge>
+        <span>{{ l.text }}</span>
+      </li>
+    }
+  </ul>
+  <p-message severity="info" text="Cada estado se distingue por su forma (▶ ■ ⚠) además de su color."></p-message>
+
+  <p-divider></p-divider>
+
+  <h3>Accesibilidad</h3>
+  <p class="note">Puedes cambiar el tamaño de letra, el tema, la paleta y activar un modo para daltonismo.</p>
+  <p-button
+    label="Abrir configuración"
+    icon="pi pi-cog"
+    severity="secondary"
+    [outlined]="true"
+    data-track="ayuda-abrir-configuracion"
+    (onClick)="openSettings()"
+  ></p-button>
+</p-dialog>

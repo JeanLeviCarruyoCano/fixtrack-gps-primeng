@@ -1,0 +1,101 @@
+<main class="results app-pn" data-usability-ignore>
+  <p-confirmDialog styleClass="app-dialog app-pn usability-ignore"></p-confirmDialog>
+
+  <header class="top">
+    <div>
+      <h1>Resultados de usabilidad</h1>
+      <p class="muted">Calculados únicamente con los datos guardados en este navegador.</p>
+    </div>
+    <p-button label="Volver a la aplicación" icon="pi pi-arrow-left" severity="secondary" [outlined]="true" routerLink="/home"></p-button>
+  </header>
+
+  @if (!hasData()) {
+    <p-card header="Aún no hay datos">
+      <p-message
+        severity="info"
+        text="Activa el modo prueba, inicia tareas desde el panel de moderador y finaliza al menos un intento o un cuestionario SUS para ver las métricas."
+        role="status"
+      ></p-message>
+    </p-card>
+  } @else {
+    <section class="actions" aria-label="Exportación">
+      <p-button label="Exportar CSV (datos crudos)" icon="pi pi-file" size="small" (onClick)="exportCsv()"></p-button>
+      <p-button label="Exportar JSON (datos crudos)" icon="pi pi-code" size="small" (onClick)="exportJson()"></p-button>
+      <p-button label="Exportar resumen Markdown" icon="pi pi-download" size="small" (onClick)="exportMarkdown()"></p-button>
+      <p-button label="Borrar datos" icon="pi pi-trash" severity="danger" [outlined]="true" size="small" (onClick)="clear()"></p-button>
+    </section>
+
+    <p-card header="Métricas frente a metas" [subheader]="summary().finishedAttempts + ' intentos finalizados · ' + summary().participants + ' participantes'">
+      <p-table [value]="metricRows()" styleClass="p-datatable-sm" [tableStyle]="{ 'min-width': '36rem' }">
+        <ng-template pTemplate="header">
+          <tr><th>Métrica</th><th>Resultado</th><th>Meta</th><th>Estado</th></tr>
+        </ng-template>
+        <ng-template pTemplate="body" let-row>
+          <tr>
+            <td>{{ row.name }}</td>
+            <td>{{ row.result }}</td>
+            <td>{{ row.target }}</td>
+            <td><p-tag [severity]="severityOf(row.meets)" [icon]="iconOf(row.meets)" [value]="verdict(row.meets)"></p-tag></td>
+          </tr>
+        </ng-template>
+      </p-table>
+    </p-card>
+
+    <p-card header="Tiempos por tarea (segundos)" subheader="No se incluyen los intentos abandonados.">
+      <p-table [value]="summary().taskTimes" styleClass="p-datatable-sm" [tableStyle]="{ 'min-width': '40rem' }">
+        <ng-template pTemplate="header">
+          <tr><th>Tarea</th><th>n</th><th>Mediana</th><th>Promedio</th><th>Meta</th><th>Estado</th></tr>
+        </ng-template>
+        <ng-template pTemplate="body" let-t>
+          <tr>
+            <td>{{ t.taskId }} · {{ t.title }}</td>
+            <td>{{ t.n }}</td>
+            <td>{{ fmt(t.median) }}</td>
+            <td>{{ fmt(t.mean) }}</td>
+            <td>{{ t.targetSeconds === null ? '—' : '≤ ' + t.targetSeconds + ' s' }}</td>
+            <td><p-tag [severity]="severityOf(t.meets)" [icon]="iconOf(t.meets)" [value]="verdict(t.meets)"></p-tag></td>
+          </tr>
+        </ng-template>
+      </p-table>
+    </p-card>
+
+    <p-card header="Errores por tipo y gravedad">
+      <p-table [value]="summary().errorsByType" styleClass="p-datatable-sm">
+        <ng-template pTemplate="header">
+          <tr><th>Tipo</th><th>Crítico</th><th>Menor</th></tr>
+        </ng-template>
+        <ng-template pTemplate="body" let-e>
+          <tr>
+            <td>{{ typeLabel(e.type) }}</td>
+            <td>{{ e.critico }}</td>
+            <td>{{ e.menor }}</td>
+          </tr>
+        </ng-template>
+      </p-table>
+    </p-card>
+
+    <p-card header="SUS por participante">
+      @if (summary().susScores.length === 0) {
+        <p-message severity="info" text="Ningún participante ha respondido el SUS."></p-message>
+      } @else {
+        <p-table [value]="summary().susScores" styleClass="p-datatable-sm">
+          <ng-template pTemplate="header">
+            <tr><th>Participante</th><th>Puntuación (0–100)</th></tr>
+          </ng-template>
+          <ng-template pTemplate="body" let-s>
+            <tr>
+              <td>{{ s.participantId }}</td>
+              <td>{{ fmt(s.score) }}</td>
+            </tr>
+          </ng-template>
+          <ng-template pTemplate="footer">
+            <tr>
+              <td>Promedio</td>
+              <td>{{ fmt(summary().susAverage) }}</td>
+            </tr>
+          </ng-template>
+        </p-table>
+      }
+    </p-card>
+  }
+</main>

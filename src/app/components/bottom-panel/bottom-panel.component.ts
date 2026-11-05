@@ -1,9 +1,17 @@
-import { Component, inject } from '@angular/core';
+import {
+  AfterViewInit,
+  Component,
+  ElementRef,
+  OnDestroy,
+  inject,
+  viewChild,
+} from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ButtonModule } from 'primeng/button';
 import { TooltipModule } from 'primeng/tooltip';
 import { RippleModule } from 'primeng/ripple';
 import { GpsService } from '../../services/gps.service';
+import { MapCommandService } from '../../services/map-command.service';
 import { PanelView } from '../../models/gps.model';
 import { GpsSelectorComponent } from '../gps-selector/gps-selector.component';
 
@@ -19,18 +27,21 @@ interface PanelButton {
   standalone: true,
   imports: [CommonModule, ButtonModule, TooltipModule, RippleModule, GpsSelectorComponent],
   template: `
-    <div class="panel">
+    <div class="panel" #panel>
       <app-gps-selector></app-gps-selector>
 
-      <div class="actions">
+      <nav class="actions" aria-label="Secciones del vehículo">
         <button
           *ngFor="let b of buttons"
           type="button"
           pButton
           pRipple
           class="action-btn p-button-rounded"
-          [class.active]="gps.activeView() === b.view"
+          [class.active]="isActive(b.view)"
           [class.disabled]="gps.selectedDevice() === null"
+          [attr.aria-current]="isActive(b.view) ? 'page' : null"
+          [attr.aria-disabled]="gps.selectedDevice() === null"
+          [attr.data-track]="'nav-' + b.view"
           (click)="onSelect(b.view)"
           [pTooltip]="gps.selectedDevice() === null ? 'Selecciona un GPS primero' : b.hint"
           tooltipPosition="top"
@@ -38,7 +49,7 @@ interface PanelButton {
           <i class="pi" [class]="b.icon"></i>
           <span class="action-label">{{ b.label }}</span>
         </button>
-      </div>
+      </nav>
     </div>
   `,
   styles: [
@@ -50,12 +61,12 @@ interface PanelButton {
         transform: translateX(-50%);
         z-index: 1000;
         width: min(690px, calc(100vw - 28px));
-        border: 1px solid rgba(225, 232, 240, 0.95);
-        background: rgba(255, 255, 255, 0.96);
+        border: 1px solid var(--border);
+        background: var(--surface-glass);
         backdrop-filter: blur(14px);
         border-radius: 17px;
         padding: 12px;
-        box-shadow: 0 12px 34px rgba(20, 39, 65, 0.2);
+        box-shadow: 0 12px 34px var(--shadow-color);
         display: flex;
         flex-direction: column;
         gap: 12px;
@@ -78,23 +89,34 @@ interface PanelButton {
         border-radius: 11px;
         background: transparent;
         border: none;
-        color: #1f2937;
-        font-size: 11px;
+        color: var(--text-primary);
+        font-size: 0.6875rem;
         font-weight: 600;
         box-shadow: none;
         height: auto;
+        position: relative;
         transition: background 0.15s ease;
       }
       :host ::ng-deep .action-btn.p-button:not(.disabled):hover {
-        background: #f1f5f9;
+        background: var(--surface-hover);
       }
       :host ::ng-deep .action-btn.p-button.active {
-        background: #edf3ff;
-        color: #2563eb;
+        background: var(--accent-soft);
+        color: var(--accent);
+        font-weight: 700;
+      }
+      :host ::ng-deep .action-btn.p-button.active::after {
+        content: '';
+        position: absolute;
+        left: 22%;
+        right: 22%;
+        bottom: 3px;
+        height: 3px;
+        border-radius: 3px;
+        background: var(--accent);
       }
       :host ::ng-deep .action-btn.p-button.active .pi {
-        color: #2563eb;
-        color: white;
+        color: var(--accent);
       }
       :host ::ng-deep .action-btn.p-button.disabled {
         opacity: 0.45;
@@ -124,7 +146,7 @@ interface PanelButton {
           padding: 7px 1px;
         }
         .action-label {
-          font-size: 9px;
+          font-size: 0.5625rem;
           letter-spacing: -0.2px;
         }
         :host ::ng-deep .action-btn.p-button .pi {
@@ -134,8 +156,12 @@ interface PanelButton {
     `,
   ],
 })
-export class BottomPanelComponent {
+export class BottomPanelComponent implements AfterViewInit, OnDestroy {
   readonly gps = inject(GpsService);
+  private readonly cmd = inject(MapCommandService);
+  private readonly panel = viewChild.required<ElementRef<HTMLElement>>('panel');
+  private observer?: ResizeObserver;
+  private readonly onResize = () => this.measure();
 
   buttons: PanelButton[] = [
     { view: 'control', label: 'Control', icon: 'pi pi-cog', hint: 'Control remoto' },
@@ -148,5 +174,26 @@ export class BottomPanelComponent {
 
   onSelect(view: PanelView): void {
     this.gps.setView(view);
+  }
+
+  isActive(view: PanelView): boolean {
+    return this.gps.selectedDevice() !== null && this.gps.activeView() === view;
+  }
+
+  ngAfterViewInit(): void {
+    this.measure();
+    this.observer = new ResizeObserver(this.onResize);
+    this.observer.observe(this.panel().nativeElement);
+    window.addEventListener('resize', this.onResize);
+  }
+
+  ngOnDestroy(): void {
+    this.observer?.disconnect();
+    window.removeEventListener('resize', this.onResize);
+  }
+
+  private measure(): void {
+    const rect = this.panel().nativeElement.getBoundingClientRect();
+    this.cmd.setNavHeight(window.innerHeight - rect.top);
   }
 }

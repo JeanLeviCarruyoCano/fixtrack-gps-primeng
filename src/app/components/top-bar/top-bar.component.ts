@@ -18,6 +18,7 @@ import { GpsService } from '../../services/gps.service';
           [text]="true"
           [rounded]="true"
           ariaLabel="Abrir menú"
+          data-track="menu-abrir"
         ></p-button>
         <p-badge
           *ngIf="gps.notificationsCount() > 0"
@@ -48,14 +49,14 @@ import { GpsService } from '../../services/gps.service';
       :host ::ng-deep .menu-btn {
         width: 44px !important;
         height: 44px !important;
-        background: rgba(255, 255, 255, 0.96) !important;
-        border: 1px solid rgba(225, 232, 240, 0.9) !important;
-        color: #34465e !important;
+        background: var(--surface-glass) !important;
+        border: 1px solid var(--border) !important;
+        color: var(--text-strong) !important;
         border-radius: 13px !important;
-        box-shadow: 0 6px 18px rgba(20, 39, 65, 0.13);
+        box-shadow: 0 6px 18px var(--shadow-color);
       }
       :host ::ng-deep .menu-btn:hover {
-        background: #f5f8fc !important;
+        background: var(--surface-hover) !important;
       }
       :host ::ng-deep .menu-btn .pi {
         font-size: 1.1rem;
@@ -64,7 +65,7 @@ import { GpsService } from '../../services/gps.service';
         position: absolute !important;
         top: -6px;
         right: -6px;
-        box-shadow: 0 0 0 2px #ffffff;
+        box-shadow: 0 0 0 2px var(--surface);
         min-width: 18px;
         height: 18px;
         border-radius: 9px;

@@ -2,8 +2,44 @@
 @import 'primeng/resources/primeng.min.css';
 @import 'primeng/resources/themes/lara-light-blue/theme.css';
 @import 'primeicons/primeicons.css';
+@import './app/settings/themes.css';
 
 :root {
+  /* Design tokens: contrast ratios verified against #ffffff, #f8fafd and #f3f6fb (WCAG AA >= 4.5:1) */
+  --text-primary: #0f172a;
+  --text-secondary: #475569;
+  --text-muted: #556274;
+  --text-strong: #34465e;
+  --accent: #2563eb;
+  --accent-soft: #e8f0ff;
+  --on-accent: #ffffff;
+  --focus-ring: #1d4ed8;
+
+  --surface: #ffffff;
+  --surface-glass: rgba(255, 255, 255, 0.96);
+  --surface-glass-clear: rgba(255, 255, 255, 0);
+  --surface-alt: #f8fafd;
+  --surface-sunken: #f3f6fb;
+  --surface-hover: #f1f5f9;
+  --border: #e5ebf2;
+  --scroll-track: #e5eaf1;
+  --shadow-color: rgba(20, 39, 65, 0.2);
+  --map-bg: #1a2b3a;
+
+  /* One color per vehicle status, used by marker, popup, badge, nav and lists. -fill is for solid fills with white glyphs */
+  --status-online: #15803d;
+  --status-online-bg: #dcfce7;
+  --status-online-fill: #15803d;
+  --status-idle: #b45309;
+  --status-idle-bg: #fef3c7;
+  --status-idle-fill: #b45309;
+  --status-offline: #b91c1c;
+  --status-offline-bg: #fee2e2;
+  --status-offline-fill: #b91c1c;
+
+  --sheet-gap: 8px;
+  --sheet-transition: 0.28s cubic-bezier(0.22, 0.8, 0.3, 1);
+
   color-scheme: light;
   font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Arial, sans-serif;
   font-synthesis: none;
@@ -23,8 +59,12 @@ body {
   width: 100%;
   min-height: 100%;
   overflow-x: hidden;
-  background: #f3f6fb;
-  color: #1f2937;
+  background: var(--surface-sunken);
+  color: var(--text-primary);
+}
+
+html {
+  font-size: calc(16px * var(--font-scale, 1));
 }
 
 app-root {
@@ -36,7 +76,7 @@ app-root {
 
 /* Leaflet map */
 .leaflet-container {
-  background: #1a2b3a;
+  background: var(--map-bg);
   font-family: 'Inter', sans-serif;
   outline: none;
 }
@@ -46,14 +86,14 @@ app-root {
 }
 
 .leaflet-control-attribution {
-  background: rgba(255, 255, 255, 0.82) !important;
-  color: #333 !important;
+  background: var(--surface-glass) !important;
+  color: var(--text-secondary) !important;
   font-size: 10px !important;
   padding: 2px 6px !important;
   border-radius: 4px 0 0 0 !important;
 }
 .leaflet-control-attribution a {
-  color: #1976d2 !important;
+  color: var(--accent) !important;
 }
 
 .leaflet-bar {
@@ -77,13 +117,14 @@ app-root {
 }
 
 .gps-marker {
+  position: relative;
   display: grid;
   width: 35px;
   height: 35px;
   place-items: center;
   border: 3px solid #ffffff;
   border-radius: 50%;
-  background: #64748b;
+  background: var(--status-offline-fill);
   color: #ffffff;
   box-shadow: 0 3px 10px rgba(20, 39, 65, 0.35);
   cursor: pointer;
@@ -95,15 +136,88 @@ app-root {
 }
 
 .gps-marker.status-online {
-  background: #16a36a;
+  background: var(--status-online-fill);
 }
 
 .gps-marker.status-idle {
-  background: #d99a17;
+  background: var(--status-idle-fill);
 }
 
 .gps-marker.status-offline {
-  background: #64748b;
+  background: var(--status-offline-fill);
+}
+
+.gps-marker-badge {
+  position: absolute;
+  right: -8px;
+  bottom: -8px;
+  display: grid;
+  width: 18px;
+  height: 18px;
+  place-items: center;
+  border: 2px solid currentColor;
+  border-radius: 50%;
+  background: var(--surface);
+}
+
+.gps-marker.status-online .gps-marker-badge {
+  color: var(--status-online);
+}
+.gps-marker.status-idle .gps-marker-badge {
+  color: var(--status-idle);
+}
+.gps-marker.status-offline .gps-marker-badge {
+  color: var(--status-offline);
+}
+
+.status-icon {
+  display: inline-block;
+  flex-shrink: 0;
+  vertical-align: middle;
+}
+
+.status-icon.status-online {
+  color: var(--status-online);
+}
+.status-icon.status-idle {
+  color: var(--status-idle);
+}
+.status-icon.status-offline {
+  color: var(--status-offline);
+}
+
+.popup-vehicle {
+  display: flex;
+  min-width: 150px;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+}
+.popup-vehicle-id {
+  color: var(--text-primary);
+  font-size: 0.875rem;
+  font-weight: 700;
+}
+.popup-vehicle-speed {
+  color: var(--text-secondary);
+  font-size: 0.8125rem;
+  font-weight: 600;
+}
+
+:focus-visible {
+  outline: 2px solid var(--focus-ring);
+  outline-offset: 2px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
 }
 
 .gps-marker.selected {
@@ -118,11 +232,11 @@ app-root {
   left: 50%;
   padding: 2px 6px;
   transform: translateX(-50%);
-  border: 1px solid rgba(220, 228, 238, 0.95);
+  border: 1px solid var(--border);
   border-radius: 6px;
-  background: rgba(255, 255, 255, 0.96);
-  color: #334155;
-  font-size: 9px;
+  background: var(--surface-glass);
+  color: var(--text-primary);
+  font-size: 0.5625rem;
   font-weight: 700;
   line-height: 1.3;
   white-space: nowrap;
@@ -133,7 +247,11 @@ app-root {
 /* Leaflet popup */
 .leaflet-popup-content-wrapper {
   border-radius: 8px !important;
+  background: var(--surface) !important;
   box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2) !important;
+}
+.leaflet-popup-tip {
+  background: var(--surface) !important;
 }
 .leaflet-popup-content {
   margin: 12px 16px !important;
@@ -144,7 +262,7 @@ app-root {
 
 /* PrimeNG layer menu */
 .app-sidebar.p-sidebar {
-  background: #ffffff !important;
+  background: var(--surface) !important;
   box-shadow: 18px 0 50px rgba(17, 35, 61, 0.2);
 }
 
@@ -159,13 +277,13 @@ app-root {
 
 .app-sidebar.p-sidebar .p-sidebar-footer {
   padding: 14px 16px !important;
-  border-top: 1px solid #e5e7eb;
+  border-top: 1px solid var(--border);
 }
 
 .layer-menu-popup .p-menu {
   width: 200px;
   overflow: hidden;
-  border: 1px solid #e8edf4;
+  border: 1px solid var(--border);
   border-radius: 12px;
   box-shadow: 0 14px 32px rgba(17, 35, 61, 0.18);
 }

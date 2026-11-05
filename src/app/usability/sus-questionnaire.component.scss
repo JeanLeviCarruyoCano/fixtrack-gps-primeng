@@ -1,0 +1,32 @@
+.intro {
+  margin: 0 0 0.75rem;
+  color: var(--text-secondary);
+}
+
+.question {
+  margin-top: 1rem;
+  padding-bottom: 0.75rem;
+  border-bottom: 1px solid var(--border);
+}
+
+.q-text {
+  margin: 0 0 0.5rem;
+  color: var(--text-primary);
+  font-weight: 600;
+}
+
+.scale {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1.25rem;
+}
+
+.point {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+.point label {
+  color: var(--text-primary);
+  cursor: pointer;
+}

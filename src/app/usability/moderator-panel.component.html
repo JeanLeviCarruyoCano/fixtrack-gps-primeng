@@ -1,0 +1,135 @@
+<div class="moderator app-pn" data-usability-ignore>
+  <p-button
+    class="tab"
+    styleClass="tab-btn"
+    severity="secondary"
+    (onClick)="open.set(!open())"
+    [attr.aria-expanded]="open()"
+    aria-controls="moderator-body"
+    ariaLabel="Panel de moderador"
+  >
+    <span class="dot" [class.recording]="service.activeAttempt() !== null"></span>
+    <span class="tab-text">Moderador</span>
+  </p-button>
+
+  @if (open()) {
+    <p-card class="body" id="moderator-body" role="region" aria-label="Panel de moderador">
+      <ng-template pTemplate="header">
+        <div class="head">
+          <strong>Modo prueba de usabilidad</strong>
+          <p-tag severity="info" icon="pi pi-user" [value]="'Participante: ' + (service.participantId() ?? 'sin asignar')"></p-tag>
+        </div>
+      </ng-template>
+
+      <p-button
+        label="Nuevo participante"
+        icon="pi pi-user-plus"
+        severity="secondary"
+        [outlined]="true"
+        size="small"
+        (onClick)="service.newParticipant()"
+        [disabled]="service.activeAttempt() !== null"
+      ></p-button>
+
+      <p-divider></p-divider>
+
+      <h3>Tarea</h3>
+      <label class="field" for="mod-task">Seleccionar tarea</label>
+      <p-dropdown
+        inputId="mod-task"
+        appendTo="body"
+        styleClass="w-full"
+        panelStyleClass="usability-ignore"
+        [options]="taskOptions"
+        optionLabel="label"
+        optionValue="value"
+        [ngModel]="selectedTaskId()"
+        (ngModelChange)="selectedTaskId.set($event)"
+        [disabled]="service.activeAttempt() !== null"
+      ></p-dropdown>
+
+      @if (displayTask(); as task) {
+        <p class="instruction">{{ task.instruction }}</p>
+        <p class="meta">
+          Éxito: {{ task.successDescription }}<br />
+          Meta de tiempo: {{ task.targetSeconds === null ? 'sin meta' : '≤ ' + task.targetSeconds + ' s' }}
+        </p>
+      }
+
+      @if (service.activeAttempt(); as attempt) {
+        <p-tag
+          severity="warning"
+          icon="pi pi-stopwatch"
+          [value]="attempt.taskId + ' · intento ' + attempt.attempt + ' · ' + elapsed()"
+        ></p-tag>
+        <div class="outcomes">
+          <p-button label="Completó sin ayuda" severity="success" size="small" (onClick)="service.finishTask('sin-ayuda')"></p-button>
+          <p-button label="Completó con ayuda" severity="secondary" size="small" (onClick)="service.finishTask('con-ayuda')"></p-button>
+          <p-button label="Abandonó" severity="danger" size="small" (onClick)="service.finishTask('abandono')"></p-button>
+        </div>
+      } @else {
+        <p-button label="Iniciar tarea" icon="pi pi-play" size="small" (onClick)="start()"></p-button>
+      }
+
+      <p-divider></p-divider>
+
+      <h3>Registrar error</h3>
+      <label class="field" for="mod-error-type">Tipo</label>
+      <p-dropdown
+        inputId="mod-error-type"
+        appendTo="body"
+        styleClass="w-full"
+        panelStyleClass="usability-ignore"
+        [options]="errorTypes"
+        optionLabel="label"
+        optionValue="value"
+        [ngModel]="errorType()"
+        (ngModelChange)="errorType.set($event)"
+      ></p-dropdown>
+
+      <span class="field" id="mod-severity-label">Gravedad</span>
+      <p-selectButton
+        ariaLabelledBy="mod-severity-label"
+        [options]="severities"
+        optionLabel="label"
+        optionValue="value"
+        [allowEmpty]="false"
+        [ngModel]="severity()"
+        (ngModelChange)="severity.set($event)"
+      ></p-selectButton>
+
+      <label class="field" for="mod-note">Nota (opcional, sin datos personales)</label>
+      <input pInputText id="mod-note" type="text" maxlength="120" [ngModel]="note()" (ngModelChange)="note.set($event)" />
+
+      <p-button
+        label="Registrar error"
+        icon="pi pi-flag"
+        severity="secondary"
+        size="small"
+        (onClick)="logError()"
+        [disabled]="service.participantId() === null"
+      ></p-button>
+      @if (feedback()) {
+        <p-message [severity]="feedbackOk() ? 'success' : 'warn'" [text]="feedback()" role="status"></p-message>
+      }
+
+      <p-divider></p-divider>
+
+      <h3>Cierre</h3>
+      @if (service.allTasksDone() && !service.susDone()) {
+        <p-message severity="info" text="Todas las tareas finalizadas. Falta el cuestionario SUS."></p-message>
+      }
+      <div class="outcomes">
+        <p-button
+          label="Mostrar cuestionario SUS"
+          icon="pi pi-list-check"
+          size="small"
+          (onClick)="service.openSus()"
+          [disabled]="service.participantId() === null || service.activeAttempt() !== null"
+        ></p-button>
+        <p-button label="Ver resultados" icon="pi pi-chart-bar" severity="secondary" [outlined]="true" size="small" routerLink="/usabilidad/resultados"></p-button>
+        <p-button label="Desactivar modo prueba" icon="pi pi-power-off" severity="danger" [outlined]="true" size="small" (onClick)="service.setEnabled(false)"></p-button>
+      </div>
+    </p-card>
+  }
+</div>

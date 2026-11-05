@@ -19,7 +19,10 @@ import { MapCommandService } from '../../services/map-command.service';
   standalone: true,
   imports: [CommonModule, ButtonModule, MenuModule],
   template: `
-    <div class="controls" [class.with-info-panel]="gps.selectedDevice() !== null">
+    <div
+      class="controls"
+      [style.bottom.px]="cmd.bottomInset() + 12"
+    >
       <!-- Layer toggle button -->
       <button
         pButton
@@ -28,6 +31,7 @@ import { MapCommandService } from '../../services/map-command.service';
         class="p-button-text p-button-rounded round-btn"
         (click)="layerMenu.toggle($event)"
         aria-label="Capas"
+        data-track="mapa-capas"
       ></button>
       <p-menu
         #layerMenu
@@ -46,6 +50,7 @@ import { MapCommandService } from '../../services/map-command.service';
           class="p-button-text p-button-rounded round-btn zoom-btn"
           (click)="cmd.zoomIn()"
           aria-label="Acercar"
+          data-track="mapa-acercar"
         ></button>
         <div class="separator"></div>
         <button
@@ -55,6 +60,7 @@ import { MapCommandService } from '../../services/map-command.service';
           class="p-button-text p-button-rounded round-btn zoom-btn"
           (click)="cmd.zoomOut()"
           aria-label="Alejar"
+          data-track="mapa-alejar"
         ></button>
       </div>
 
@@ -66,6 +72,7 @@ import { MapCommandService } from '../../services/map-command.service';
         class="p-button-text p-button-rounded round-btn compass"
         (click)="cmd.recenter()"
         aria-label="Centrar"
+        data-track="mapa-centrar"
       ></button>
     </div>
   `,
@@ -74,32 +81,28 @@ import { MapCommandService } from '../../services/map-command.service';
       .controls {
         position: absolute;
         right: 18px;
-        bottom: 200px;
         z-index: 1000;
         display: flex;
         flex-direction: column;
         align-items: flex-end;
         gap: 9px;
-      }
-
-      .controls.with-info-panel {
-        right: 390px;
+        transition: bottom var(--sheet-transition);
       }
 
       :host ::ng-deep .round-btn {
         width: 42px !important;
         height: 42px !important;
-        background: rgba(255, 255, 255, 0.97) !important;
-        color: #34465e !important;
-        border: 1px solid #e3eaf2 !important;
+        background: var(--surface-glass) !important;
+        color: var(--text-strong) !important;
+        border: 1px solid var(--border) !important;
         border-radius: 12px !important;
-        box-shadow: 0 5px 16px rgba(20, 39, 65, 0.16);
+        box-shadow: 0 5px 16px var(--shadow-color);
       }
       :host ::ng-deep .round-btn:hover {
-        background: #f3f4f6 !important;
+        background: var(--surface-hover) !important;
       }
       :host ::ng-deep .round-btn.compass {
-        color: #2563eb !important;
+        color: var(--accent) !important;
       }
       :host ::ng-deep .round-btn .pi {
         font-size: 1.05rem;
@@ -109,10 +112,10 @@ import { MapCommandService } from '../../services/map-command.service';
         display: flex;
         flex-direction: column;
         align-items: stretch;
-        background: white;
-        border: 1px solid #e3eaf2;
+        background: var(--surface);
+        border: 1px solid var(--border);
         border-radius: 12px;
-        box-shadow: 0 5px 16px rgba(20, 39, 65, 0.16);
+        box-shadow: 0 5px 16px var(--shadow-color);
         overflow: hidden;
       }
       :host ::ng-deep .zoom-group .zoom-btn {
@@ -121,24 +124,16 @@ import { MapCommandService } from '../../services/map-command.service';
       }
       .separator {
         height: 1px;
-        background: #e5e7eb;
+        background: var(--border);
       }
 
       @media (max-width: 540px) {
         .controls {
           right: 9px;
-          bottom: 197px;
         }
         :host ::ng-deep .round-btn {
           width: 38px !important;
           height: 38px !important;
-        }
-      }
-
-      @media (max-width: 720px) {
-        .controls.with-info-panel {
-          right: 9px;
-          bottom: calc(160px + min(42dvh, 330px) + 12px);
         }
       }
     `,

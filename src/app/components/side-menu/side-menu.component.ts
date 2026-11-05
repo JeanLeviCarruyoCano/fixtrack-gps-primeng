@@ -9,6 +9,7 @@ import { MessageService } from 'primeng/api';
 import { GpsService } from '../../services/gps.service';
 import { MapCommandService } from '../../services/map-command.service';
 import { PanelView } from '../../models/gps.model';
+import { UiPanelService } from '../../settings/ui-panel.service';
 
 interface MenuItem {
   icon: string;
@@ -64,13 +65,14 @@ interface MenuItem {
             [class.active]="isActive(item)"
             [attr.aria-current]="isActive(item) ? 'page' : null"
             pRipple
+            [attr.data-track]="'menu-' + item.label"
             (click)="onMenuItemClick(item)"
           >
             <i class="pi" [class]="item.icon"></i>
             <span class="text">{{ item.label }}</span>
             <p-badge
-              *ngIf="item.badge"
-              [value]="item.badge"
+              *ngIf="badgeFor(item)"
+              [value]="badgeFor(item)"
               severity="danger"
             ></p-badge>
           </button>
@@ -103,8 +105,8 @@ interface MenuItem {
       .header {
         min-height: 78px;
         padding: 17px 20px;
-        background: #ffffff;
-        color: #1d3049;
+        background: var(--surface);
+        color: var(--text-strong);
         display: flex;
         align-items: center;
         justify-content: space-between;
@@ -119,21 +121,21 @@ interface MenuItem {
         width: 34px;
         height: 34px;
         place-items: center;
-        border: 1px solid #e5ebf5;
+        border: 1px solid var(--border);
         border-radius: 11px;
-        background: #f3f6fb;
+        background: var(--surface-sunken);
       }
       .brand-logo {
-        color: #3978f6;
-        font-size: 16px;
+        color: var(--accent);
+        font-size: 1rem;
       }
       .brand-name {
-        color: #1d3049;
-        font-size: 17px;
+        color: var(--text-strong);
+        font-size: 1.0625rem;
         font-weight: 500;
       }
       .brand-name strong {
-        color: #3978f6;
+        color: var(--accent);
         font-weight: 700;
       }
 
@@ -141,27 +143,27 @@ interface MenuItem {
         display: grid;
         grid-template-columns: repeat(3, 1fr);
         padding: 19px 12px;
-        border-bottom: 1px solid #edf1f6;
+        border-bottom: 1px solid var(--border);
       }
       .summary-item {
         text-align: center;
       }
       .value {
         display: block;
-        font-size: 21px;
+        font-size: 1.3125rem;
         font-weight: 700;
-        color: #0f172a;
+        color: var(--text-primary);
       }
       .value.online {
-        color: #16a34a;
+        color: var(--status-online);
       }
       .value.alert {
-        color: #ef4444;
+        color: var(--status-offline);
       }
       .label {
         margin-top: 3px;
-        font-size: 9px;
-        color: #6b7280;
+        font-size: 0.5625rem;
+        color: var(--text-secondary);
         text-transform: uppercase;
         letter-spacing: 0.4px;
       }
@@ -182,29 +184,29 @@ interface MenuItem {
         background: transparent;
         cursor: pointer;
         border-radius: 10px;
-        color: #43536a;
-        font-size: 14px;
+        color: var(--text-strong);
+        font-size: 0.875rem;
         font-weight: 500;
         text-align: left;
         transition: background 0.15s ease;
       }
       .nav-item:hover {
-        background: #f2f6fc;
+        background: var(--surface-hover);
       }
       .nav-item.active {
-        background: #edf3ff;
-        color: #2563eb;
+        background: var(--accent-soft);
+        color: var(--accent);
       }
       .nav-item.active .pi {
-        color: #2563eb;
+        color: var(--accent);
       }
       .nav-item:focus-visible {
-        outline: 2px solid #8bb0fa;
+        outline: 2px solid var(--focus-ring);
         outline-offset: 2px;
       }
       .nav-item .pi {
         font-size: 16px;
-        color: #5d82c7;
+        color: var(--accent);
         width: 20px;
         text-align: center;
       }
@@ -221,8 +223,8 @@ interface MenuItem {
         width: 36px;
         height: 36px;
         border-radius: 50%;
-        background: linear-gradient(135deg, #3b82f6, #1e40af);
-        color: white;
+        background: linear-gradient(135deg, var(--accent), var(--text-strong));
+        color: var(--surface);
         display: flex;
         align-items: center;
         justify-content: center;
@@ -234,13 +236,13 @@ interface MenuItem {
         min-width: 0;
       }
       .user-name {
-        font-size: 13px;
+        font-size: 0.8125rem;
         font-weight: 600;
-        color: #0f172a;
+        color: var(--text-primary);
       }
       .user-email {
-        font-size: 11px;
-        color: #6b7280;
+        font-size: 0.6875rem;
+        color: var(--text-secondary);
         overflow: hidden;
         text-overflow: ellipsis;
         white-space: nowrap;
@@ -251,20 +253,20 @@ interface MenuItem {
         height: 36px;
         flex: 0 0 auto;
         place-items: center;
-        border: 1px solid #e7ebf0;
+        border: 1px solid var(--border);
         border-radius: 10px;
-        background: #fff;
-        color: #718096;
+        background: var(--surface);
+        color: var(--text-secondary);
         cursor: pointer;
         transition: background 0.15s ease, color 0.15s ease, border-color 0.15s ease;
       }
       .logout-btn:hover {
-        border-color: #fecaca;
-        background: #fff5f5;
-        color: #dc2626;
+        border-color: var(--status-offline);
+        background: var(--status-offline-bg);
+        color: var(--status-offline);
       }
       .logout-btn:focus-visible {
-        outline: 2px solid #8bb0fa;
+        outline: 2px solid var(--focus-ring);
         outline-offset: 2px;
       }
     `,
@@ -275,6 +277,7 @@ export class SideMenuComponent {
   private readonly router = inject(Router);
   private readonly mapCommand = inject(MapCommandService);
   private readonly messageService = inject(MessageService);
+  private readonly panels = inject(UiPanelService);
 
   get visible(): boolean {
     return this.gps.menuOpen();
@@ -294,21 +297,25 @@ export class SideMenuComponent {
         return;
       case 'alerts':
         this.gps.closeMenu();
-        this.messageService.add({
-          severity: 'info',
-          summary: 'Alertas',
-          detail: 'El panel de alertas estará disponible próximamente.',
-        });
+        this.panels.show('alerts');
         return;
       case 'settings':
-        this.showComingSoon('Configuración');
+        this.gps.closeMenu();
+        this.panels.show('settings');
         return;
       case 'help':
-        this.showComingSoon('Ayuda');
+        this.gps.closeMenu();
+        this.panels.show('help');
         return;
       default:
         this.openView(item.action);
     }
+  }
+
+  badgeFor(item: MenuItem): number | null {
+    if (item.action === 'alerts') return this.gps.notificationsCount() || null;
+    if (item.action === 'vehicles') return this.gps.devices().length || null;
+    return item.badge ?? null;
   }
 
   isActive(item: MenuItem): boolean {
@@ -332,15 +339,6 @@ export class SideMenuComponent {
     }
     this.gps.setView(view);
     this.gps.closeMenu();
-  }
-
-  private showComingSoon(feature: string): void {
-    this.gps.closeMenu();
-    this.messageService.add({
-      severity: 'info',
-      summary: feature,
-      detail: `La sección de ${feature.toLowerCase()} estará disponible próximamente.`,
-    });
   }
 
   cerrarSesion(): void {

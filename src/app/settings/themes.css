@@ -1,0 +1,479 @@
+/* Palettes (accent). Every value keeps >= 4.5:1 against its surface. */
+html[data-palette='verde'] {
+  --accent: #047857;
+  --accent-soft: #e3f6ef;
+  --focus-ring: #047857;
+}
+html[data-palette='violeta'] {
+  --accent: #7c3aed;
+  --accent-soft: #f1eaff;
+  --focus-ring: #6d28d9;
+}
+html[data-palette='naranja'] {
+  --accent: #c2410c;
+  --accent-soft: #fff0e6;
+  --focus-ring: #c2410c;
+}
+html[data-palette='rosa'] {
+  --accent: #be185d;
+  --accent-soft: #fde8f1;
+  --focus-ring: #be185d;
+}
+
+/* Dark theme */
+html[data-theme='dark'] {
+  color-scheme: dark;
+  --text-primary: #f1f5f9;
+  --text-secondary: #cbd5e1;
+  --text-muted: #a8b3c4;
+  --text-strong: #e2e8f0;
+  --accent: #60a5fa;
+  --accent-soft: #172e5a;
+  --on-accent: #0b1220;
+  --focus-ring: #93c5fd;
+  --surface: #111827;
+  --surface-glass: rgba(17, 24, 39, 0.96);
+  --surface-glass-clear: rgba(17, 24, 39, 0);
+  --surface-alt: #1a2335;
+  --surface-sunken: #0b1220;
+  --surface-hover: #243047;
+  --border: #2b3649;
+  --scroll-track: #2b3649;
+  --shadow-color: rgba(0, 0, 0, 0.5);
+  --map-bg: #0b1220;
+  --status-online: #4ade80;
+  --status-online-bg: #14532d;
+  --status-idle: #fbbf24;
+  --status-idle-bg: #78350f;
+  --status-offline: #f87171;
+  --status-offline-bg: #450a0a;
+}
+html[data-theme='dark'] .leaflet-tile-pane {
+  filter: invert(1) hue-rotate(180deg) brightness(0.92) contrast(0.9);
+}
+html[data-theme='dark'][data-palette='verde'] {
+  --accent: #34d399;
+  --accent-soft: #064e3b;
+  --focus-ring: #6ee7b7;
+}
+html[data-theme='dark'][data-palette='violeta'] {
+  --accent: #c4b5fd;
+  --accent-soft: #3b2a6e;
+  --focus-ring: #ddd6fe;
+}
+html[data-theme='dark'][data-palette='naranja'] {
+  --accent: #fb923c;
+  --accent-soft: #4a2410;
+  --focus-ring: #fdba74;
+}
+html[data-theme='dark'][data-palette='rosa'] {
+  --accent: #f472b6;
+  --accent-soft: #5a1a38;
+  --focus-ring: #f9a8d4;
+}
+
+/* High contrast theme */
+html[data-theme='contrast'],
+html[data-theme='contrast'][data-palette] {
+  --text-primary: #000000;
+  --text-secondary: #1f2937;
+  --text-muted: #1f2937;
+  --text-strong: #000000;
+  --accent: #0033cc;
+  --accent-soft: #e0e8ff;
+  --on-accent: #ffffff;
+  --focus-ring: #0033cc;
+  --surface: #ffffff;
+  --surface-glass: #ffffff;
+  --surface-glass-clear: rgba(255, 255, 255, 0);
+  --surface-alt: #ffffff;
+  --surface-sunken: #f2f2f2;
+  --surface-hover: #e5e7eb;
+  --border: #000000;
+  --scroll-track: #9ca3af;
+  --shadow-color: rgba(0, 0, 0, 0.5);
+}
+html[data-theme='contrast']:not([data-cb]) {
+  --status-online: #006400;
+  --status-online-bg: #e6ffe6;
+  --status-online-fill: #006400;
+  --status-idle: #7a3e00;
+  --status-idle-bg: #fff0d0;
+  --status-idle-fill: #7a3e00;
+  --status-offline: #a00000;
+  --status-offline-bg: #ffe0e0;
+  --status-offline-fill: #a00000;
+}
+html[data-theme='contrast'] :focus-visible {
+  outline-width: 3px;
+}
+
+html[data-motion='reduce'] *,
+html[data-motion='reduce'] *::before,
+html[data-motion='reduce'] *::after {
+  animation-duration: 0.01ms !important;
+  animation-iteration-count: 1 !important;
+  transition-duration: 0.01ms !important;
+  scroll-behavior: auto !important;
+}
+
+/* PrimeNG surfaces follow the design tokens */
+.app-dialog.p-dialog {
+  border: 1px solid var(--border);
+  background: var(--surface);
+  color: var(--text-primary);
+  box-shadow: 0 20px 50px var(--shadow-color);
+}
+.app-dialog .p-dialog-header,
+.app-dialog .p-dialog-content {
+  background: var(--surface);
+  color: var(--text-primary);
+}
+.app-dialog .p-dialog-title {
+  color: var(--text-primary);
+  font-size: 1.125rem;
+}
+.app-dialog .p-dialog-header-icon {
+  color: var(--text-secondary);
+}
+.app-dialog .p-dialog-header-icon:hover {
+  background: var(--surface-hover);
+  color: var(--text-primary);
+}
+.p-dropdown-panel {
+  border: 1px solid var(--border);
+  background: var(--surface);
+  color: var(--text-primary);
+}
+.p-dropdown-panel .p-dropdown-items .p-dropdown-item {
+  color: var(--text-primary);
+}
+.p-dropdown-panel .p-dropdown-items .p-dropdown-item:not(.p-highlight):hover {
+  background: var(--surface-hover);
+  color: var(--text-primary);
+}
+.p-dropdown-panel .p-dropdown-items .p-dropdown-item.p-highlight {
+  background: var(--accent-soft);
+  color: var(--accent);
+}
+
+/* PrimeNG components inside .app-pn follow the design tokens */
+.app-pn {
+  color: var(--text-primary);
+}
+.app-pn .p-dialog-footer {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  background: var(--surface);
+  border-top: 1px solid var(--border);
+}
+
+.app-pn .p-button {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: var(--on-accent);
+}
+.app-pn .p-button:not(:disabled):hover {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: var(--on-accent);
+  filter: brightness(0.92);
+}
+.app-pn .p-dialog-header-icon.p-button,
+.app-pn .p-dialog-header-icon.p-button:not(:disabled):hover {
+  border-color: transparent;
+  background: transparent;
+  color: var(--text-secondary);
+  filter: none;
+}
+.app-pn .p-dialog-header-icon.p-button:not(:disabled):hover {
+  background: var(--surface-hover);
+  color: var(--text-primary);
+}
+
+.app-pn .p-button.p-button-secondary {
+  background: var(--surface-alt);
+  border-color: var(--border);
+  color: var(--text-primary);
+}
+.app-pn .p-button.p-button-secondary:not(:disabled):hover {
+  background: var(--surface-hover);
+  border-color: var(--border);
+  color: var(--text-primary);
+  filter: none;
+}
+.app-pn .p-button.p-button-success {
+  background: var(--status-online);
+  border-color: var(--status-online);
+  color: var(--surface);
+}
+.app-pn .p-button.p-button-danger {
+  background: var(--status-offline);
+  border-color: var(--status-offline);
+  color: var(--surface);
+}
+.app-pn .p-button.p-button-outlined,
+.app-pn .p-button.p-button-text {
+  background: transparent;
+  color: var(--accent);
+}
+.app-pn .p-button.p-button-outlined {
+  border-color: var(--accent);
+}
+.app-pn .p-button.p-button-text {
+  border-color: transparent;
+}
+.app-pn .p-button.p-button-outlined:not(:disabled):hover,
+.app-pn .p-button.p-button-text:not(:disabled):hover {
+  background: var(--accent-soft);
+  color: var(--accent);
+  filter: none;
+}
+.app-pn .p-button.p-button-outlined.p-button-secondary {
+  border-color: var(--text-muted);
+  color: var(--text-primary);
+}
+.app-pn .p-button.p-button-outlined.p-button-danger {
+  border-color: var(--status-offline);
+  color: var(--status-offline);
+}
+
+.app-pn .p-selectbutton {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+.app-pn .p-selectbutton .p-button,
+.app-pn .p-selectbutton .p-button:not(.p-disabled):not(.p-highlight):hover {
+  flex: 1 1 auto;
+  justify-content: center;
+  border: 1px solid var(--text-muted);
+  border-radius: 6px;
+  background: var(--surface-alt);
+  color: var(--text-primary);
+  filter: none;
+}
+.app-pn .p-selectbutton .p-button:not(.p-disabled):not(.p-highlight):hover {
+  background: var(--surface-hover);
+}
+.app-pn .p-selectbutton .p-button.p-highlight,
+.app-pn .p-selectbutton .p-button.p-highlight:hover {
+  border-color: var(--accent);
+  background: var(--accent);
+  color: var(--on-accent);
+}
+
+.app-pn .p-radiobutton .p-radiobutton-box {
+  border: 2px solid var(--text-muted);
+  background: var(--surface);
+}
+.app-pn .p-radiobutton:not(.p-radiobutton-disabled):hover .p-radiobutton-box {
+  border-color: var(--accent);
+}
+.app-pn .p-radiobutton .p-radiobutton-box.p-highlight,
+.app-pn .p-radiobutton .p-radiobutton-box.p-highlight:not(.p-disabled):hover {
+  border-color: var(--accent);
+  background: var(--accent);
+}
+.app-pn .p-radiobutton .p-radiobutton-box .p-radiobutton-icon {
+  background: var(--on-accent);
+}
+
+.app-pn .p-inputswitch .p-inputswitch-slider,
+.app-pn .p-inputswitch:not(.p-disabled):hover .p-inputswitch-slider {
+  background: var(--text-muted);
+}
+.app-pn .p-inputswitch .p-inputswitch-slider:before {
+  background: var(--surface);
+}
+.app-pn .p-inputswitch.p-inputswitch-checked .p-inputswitch-slider,
+.app-pn .p-inputswitch.p-inputswitch-checked:not(.p-disabled):hover .p-inputswitch-slider {
+  background: var(--accent);
+}
+.app-pn .p-inputswitch.p-inputswitch-checked .p-inputswitch-slider:before {
+  background: var(--on-accent);
+}
+
+.app-pn .p-fieldset {
+  border: 1px solid var(--border);
+  background: var(--surface);
+  color: var(--text-primary);
+}
+.app-pn .p-fieldset .p-fieldset-legend {
+  padding: 0.4rem 0.8rem;
+  border: 1px solid var(--border);
+  background: var(--surface-alt);
+  color: var(--text-primary);
+  font-weight: 700;
+}
+.app-pn .p-fieldset .p-fieldset-content {
+  padding: 0.5rem 0.25rem 0.25rem;
+}
+
+.app-pn .p-accordion .p-accordion-header .p-accordion-header-link,
+.app-pn .p-accordion .p-accordion-header:not(.p-disabled).p-highlight .p-accordion-header-link,
+.app-pn .p-accordion .p-accordion-header:not(.p-highlight):not(.p-disabled):hover .p-accordion-header-link,
+.app-pn .p-accordion .p-accordion-header:not(.p-disabled).p-highlight:hover .p-accordion-header-link {
+  padding: 0.85rem 1rem;
+  border: 1px solid var(--border);
+  background: var(--surface-alt);
+  color: var(--text-primary);
+}
+.app-pn .p-accordion .p-accordion-header:not(.p-disabled):hover .p-accordion-header-link {
+  background: var(--surface-hover);
+}
+.app-pn .p-accordion .p-accordion-content {
+  border: 1px solid var(--border);
+  background: var(--surface);
+  color: var(--text-primary);
+}
+
+.app-pn .p-tag {
+  border: 1px solid currentColor;
+  background: var(--accent-soft);
+  color: var(--accent);
+}
+.app-pn .p-tag.p-tag-danger {
+  background: var(--status-offline-bg);
+  color: var(--status-offline);
+}
+.app-pn .p-tag.p-tag-warning {
+  background: var(--status-idle-bg);
+  color: var(--status-idle);
+}
+.app-pn .p-tag.p-tag-success {
+  background: var(--status-online-bg);
+  color: var(--status-online);
+}
+.app-pn .p-tag.p-tag-secondary {
+  background: var(--surface-alt);
+  color: var(--text-secondary);
+}
+
+.app-pn .p-inline-message {
+  width: 100%;
+  justify-content: flex-start;
+  border: 1px solid currentColor;
+  background: var(--accent-soft);
+  color: var(--accent);
+}
+.app-pn .p-inline-message.p-inline-message-error {
+  background: var(--status-offline-bg);
+  color: var(--status-offline);
+}
+.app-pn .p-inline-message.p-inline-message-warn {
+  background: var(--status-idle-bg);
+  color: var(--status-idle);
+}
+.app-pn .p-inline-message.p-inline-message-success {
+  background: var(--status-online-bg);
+  color: var(--status-online);
+}
+.app-pn .p-inline-message .p-inline-message-text {
+  color: inherit;
+}
+
+.app-pn .p-divider.p-divider-horizontal:before {
+  border-top: 1px solid var(--border);
+}
+
+.app-pn .p-inputtext,
+.app-pn .p-dropdown {
+  border: 1px solid var(--text-muted);
+  background: var(--surface);
+  color: var(--text-primary);
+}
+.app-pn .p-dropdown .p-dropdown-label,
+.app-pn .p-dropdown .p-dropdown-trigger {
+  color: var(--text-primary);
+}
+.app-pn .p-inputtext::placeholder {
+  color: var(--text-secondary);
+}
+
+.app-pn .p-card {
+  border: 1px solid var(--border);
+  background: var(--surface);
+  color: var(--text-primary);
+  box-shadow: 0 1px 3px var(--shadow-color);
+}
+.app-pn .p-card .p-card-subtitle {
+  color: var(--text-secondary);
+}
+
+.app-pn .p-datatable .p-datatable-thead > tr > th {
+  border-color: var(--border);
+  background: var(--surface-alt);
+  color: var(--text-primary);
+}
+.app-pn .p-datatable .p-datatable-tbody > tr {
+  background: var(--surface);
+  color: var(--text-primary);
+}
+.app-pn .p-datatable .p-datatable-tbody > tr > td,
+.app-pn .p-datatable .p-datatable-tfoot > tr > td {
+  border-color: var(--border);
+}
+.app-pn .p-datatable .p-datatable-tfoot > tr > td {
+  background: var(--surface-alt);
+  color: var(--text-primary);
+}
+
+.app-pn .p-progressbar {
+  background: var(--surface-sunken);
+}
+.app-pn .p-progressbar .p-progressbar-value {
+  background: var(--accent);
+}
+.app-pn .p-progressbar .p-progressbar-label {
+  color: var(--on-accent);
+}
+
+.app-pn .p-confirm-dialog-message {
+  color: var(--text-primary);
+}
+
+/* Colour-blind friendly status colours (also distinguished by icon shape) */
+html[data-cb='protanopia'],
+html[data-cb='deuteranopia'] {
+  --status-online: #0b5fa5;
+  --status-online-bg: #dbeafe;
+  --status-online-fill: #0b5fa5;
+  --status-idle: #8a5a00;
+  --status-idle-bg: #fef3c7;
+  --status-idle-fill: #8a5a00;
+  --status-offline: #4b5563;
+  --status-offline-bg: #e5e7eb;
+  --status-offline-fill: #4b5563;
+}
+html[data-cb='tritanopia'] {
+  --status-online: #047857;
+  --status-online-bg: #d1fae5;
+  --status-online-fill: #047857;
+  --status-idle: #c2410c;
+  --status-idle-bg: #ffedd5;
+  --status-idle-fill: #c2410c;
+  --status-offline: #4b5563;
+  --status-offline-bg: #e5e7eb;
+  --status-offline-fill: #4b5563;
+}
+html[data-theme='dark'][data-cb='protanopia'],
+html[data-theme='dark'][data-cb='deuteranopia'] {
+  --status-online: #7cc0ff;
+  --status-online-bg: #0c3a66;
+  --status-idle: #f2c14e;
+  --status-idle-bg: #4a3200;
+  --status-offline: #cbd5e1;
+  --status-offline-bg: #374151;
+}
+html[data-theme='dark'][data-cb='tritanopia'] {
+  --status-online: #34d399;
+  --status-online-bg: #064e3b;
+  --status-idle: #fb923c;
+  --status-idle-bg: #431407;
+  --status-offline: #cbd5e1;
+  --status-offline-bg: #374151;
+}

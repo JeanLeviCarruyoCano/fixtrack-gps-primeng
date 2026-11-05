@@ -3,11 +3,13 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { DropdownModule } from 'primeng/dropdown';
 import { GpsService } from '../../services/gps.service';
+import { GpsStatus } from '../../models/gps.model';
+import { STATUS_LABEL, StatusBadgeComponent } from '../../shared/status';
 
 @Component({
   selector: 'app-gps-selector',
   standalone: true,
-  imports: [CommonModule, FormsModule, DropdownModule],
+  imports: [CommonModule, FormsModule, DropdownModule, StatusBadgeComponent],
   template: `
     <p-dropdown
       [options]="devices()"
@@ -16,18 +18,15 @@ import { GpsService } from '../../services/gps.service';
       optionLabel="label"
       placeholder="Sin GPS seleccionado"
       styleClass="gps-select"
+      data-track="selector-vehiculo"
+      ariaLabel="Seleccionar vehículo"
       [filter]="true"
       filterBy="label,vehicle"
       (onChange)="onSelect($event)"
     >
       <ng-template pTemplate="selectedItem" let-item>
         <div class="selected-row" *ngIf="item; else placeholderTpl">
-          <span
-            class="status-dot"
-            [class.online]="item.status === 'online'"
-            [class.idle]="item.status === 'idle'"
-            [class.offline]="item.status === 'offline'"
-          ></span>
+          <app-status-badge [status]="item.status" [iconOnly]="true"></app-status-badge>
           <span class="selected-label">{{ item.label }} · {{ item.vehicle }}</span>
         </div>
         <ng-template #placeholderTpl>
@@ -42,13 +41,8 @@ import { GpsService } from '../../services/gps.service';
       </ng-template>
 
       <ng-template pTemplate="item" let-item>
-        <div class="option-row">
-          <span
-            class="status-dot"
-            [class.online]="item.status === 'online'"
-            [class.idle]="item.status === 'idle'"
-            [class.offline]="item.status === 'offline'"
-          ></span>
+        <div class="option-row" [attr.data-track]="'vehiculo-' + item.id">
+          <app-status-badge [status]="item.status" [iconOnly]="true"></app-status-badge>
           <div class="option-main">
             <div class="option-label">{{ item.label }}</div>
             <div class="option-sub">{{ item.vehicle }}</div>
@@ -73,29 +67,29 @@ import { GpsService } from '../../services/gps.service';
       }
       :host ::ng-deep .gps-select.p-dropdown {
         width: 100%;
-        background: #fff !important;
-        border: 1px solid #e5ebf2 !important;
+        background: var(--surface) !important;
+        border: 1px solid var(--border) !important;
         border-radius: 12px !important;
         height: 48px !important;
         box-shadow: none;
       }
       :host ::ng-deep .gps-select.p-dropdown:hover {
-        border-color: #cbd7e7 !important;
+        border-color: var(--text-muted) !important;
       }
       :host ::ng-deep .gps-select.p-dropdown.p-focus {
-        border-color: #8bb0fa !important;
-        box-shadow: 0 0 0 3px rgba(57, 120, 246, 0.1);
+        border-color: var(--accent) !important;
+        box-shadow: 0 0 0 3px var(--accent-soft);
       }
       :host ::ng-deep .gps-select .p-dropdown-label {
-        color: #34465e !important;
+        color: var(--text-strong) !important;
       }
       :host ::ng-deep
         .gps-select.p-dropdown.p-component.p-inputwrapper-filled
         .p-dropdown-label {
-        color: #34465e !important;
+        color: var(--text-strong) !important;
       }
       :host ::ng-deep .gps-select .p-dropdown-label {
-        font-size: 14px;
+        font-size: 0.875rem;
         font-weight: 600;
       }
 
@@ -107,9 +101,9 @@ import { GpsService } from '../../services/gps.service';
         width: 100%;
       }
       .selected-label {
-        font-size: 14px;
+        font-size: 0.875rem;
         font-weight: 600;
-        color: #34465e;
+        color: var(--text-strong);
         overflow: hidden;
         text-overflow: ellipsis;
         white-space: nowrap;
@@ -117,24 +111,24 @@ import { GpsService } from '../../services/gps.service';
       }
       .placeholder-row {
         flex: 1;
-        color: #8290a3;
+        color: var(--text-muted);
       }
       .placeholder-row .pi {
         font-size: 16px;
-        color: #60748f;
+        color: var(--text-secondary);
       }
       .placeholder-text {
         flex: 1;
       }
       .ph-main {
-        font-size: 14px;
+        font-size: 0.875rem;
         font-weight: 600;
-        color: #34465e;
+        color: var(--text-strong);
         line-height: 1.2;
       }
       .ph-sub {
-        font-size: 11px;
-        color: #8290a3;
+        font-size: 0.6875rem;
+        color: var(--text-muted);
         font-weight: 500;
       }
 
@@ -150,13 +144,13 @@ import { GpsService } from '../../services/gps.service';
         min-width: 0;
       }
       .option-label {
-        font-size: 13px;
+        font-size: 0.8125rem;
         font-weight: 700;
-        color: #0f172a;
+        color: var(--text-primary);
       }
       .option-sub {
-        font-size: 11px;
-        color: #6b7280;
+        font-size: 0.6875rem;
+        color: var(--text-secondary);
         overflow: hidden;
         text-overflow: ellipsis;
         white-space: nowrap;
@@ -165,31 +159,13 @@ import { GpsService } from '../../services/gps.service';
         text-align: right;
       }
       .speed {
-        font-size: 12px;
+        font-size: 0.75rem;
         font-weight: 600;
-        color: #0f172a;
+        color: var(--text-primary);
       }
       .status-text {
-        font-size: 10px;
-        color: #6b7280;
-      }
-
-      .status-dot {
-        width: 9px;
-        height: 9px;
-        border-radius: 50%;
-        flex-shrink: 0;
-        background: #6b7280;
-      }
-      .status-dot.online {
-        background: #22c55e;
-        box-shadow: 0 0 0 2px rgba(34, 197, 94, 0.25);
-      }
-      .status-dot.idle {
-        background: #eab308;
-      }
-      .status-dot.offline {
-        background: #ef4444;
+        font-size: 0.625rem;
+        color: var(--text-secondary);
       }
     `,
   ],
@@ -212,7 +188,7 @@ export class GpsSelectorComponent {
     // value already set via ngModel binding
   }
 
-  statusText(s: 'online' | 'offline' | 'idle'): string {
-    return s === 'online' ? 'En línea' : s === 'idle' ? 'Detenido' : 'Sin señal';
+  statusText(s: GpsStatus): string {
+    return STATUS_LABEL[s];
   }
 }

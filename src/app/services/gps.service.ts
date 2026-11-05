@@ -1,5 +1,5 @@
 import { Injectable, signal, computed } from '@angular/core';
-import { GpsDevice, GPS_DEVICES, PanelView } from '../models/gps.model';
+import { GpsDevice, GPS_DEVICES, GpsAlert, PanelView, buildAlerts } from '../models/gps.model';
 
 @Injectable({ providedIn: 'root' })
 export class GpsService {
@@ -34,7 +34,9 @@ export class GpsService {
     () => this._devices().filter((d) => d.status === 'online').length
   );
 
-  readonly notificationsCount = computed(() => 4);
+  readonly notificationsCount = computed(() => this.alerts().length);
+
+  readonly alerts = computed<GpsAlert[]>(() => buildAlerts(this._devices()));
 
   select(id: string | null): void {
     this._selectedId.set(id);

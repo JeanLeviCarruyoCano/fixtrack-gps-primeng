@@ -6,11 +6,13 @@ import {
   effect,
   inject,
   viewChild,
+  untracked,
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import * as L from 'leaflet';
 import { GpsService } from '../../services/gps.service';
 import { MapCommandService } from '../../services/map-command.service';
+import { statusIconSvg } from '../../shared/status';
 
 @Component({
   selector: 'app-map',
@@ -44,6 +46,7 @@ export class MapComponent implements AfterViewInit, OnDestroy {
   private readonly terrainTiles =
     'https://{s}.tile.opentopomap.org/{z}/{x}/{y}.png';
   private readonly defaultCenter: L.LatLngExpression = [-1.0438, -80.4559];
+  private readonly topPadding = 72;
 
   constructor() {
     // React to layer changes
@@ -57,8 +60,20 @@ export class MapComponent implements AfterViewInit, OnDestroy {
     effect(() => {
       const device = this.gps.selectedDevice();
       if (!this.map || !device) return;
-      this.map.flyTo([device.lat, device.lng], 14, { duration: 0.8 });
-      this.refreshMarkers();
+      untracked(() => {
+        this.refreshMarkers();
+        setTimeout(() => {
+          this.map.flyTo(this.offsetCenter(device.lat, device.lng, 14), 14, { duration: 0.8 });
+        });
+      });
+    });
+
+    // Keep the selected vehicle visible when the sheet changes height
+    effect(() => {
+      this.cmd.bottomInset();
+      const device = untracked(() => this.gps.selectedDevice());
+      if (!this.map || !device) return;
+      untracked(() => this.ensureVisible(device));
     });
 
     // React to devices list — refresh markers
@@ -79,10 +94,32 @@ export class MapComponent implements AfterViewInit, OnDestroy {
     effect(() => {
       const tick = this.cmd.recenterTick();
       if (tick === 0 || !this.map) return;
-      const dev = this.gps.selectedDevice();
-      if (dev) this.map.flyTo([dev.lat, dev.lng], 15, { duration: 0.8 });
-      else this.map.flyTo(this.defaultCenter, 13, { duration: 0.8 });
+      untracked(() => {
+        const dev = this.gps.selectedDevice();
+        if (dev) this.map.flyTo(this.offsetCenter(dev.lat, dev.lng, 15), 15, { duration: 0.8 });
+        else this.map.flyTo(this.defaultCenter, 13, { duration: 0.8 });
+      });
     });
+  }
+
+  private offsetCenter(lat: number, lng: number, zoom: number): L.LatLng {
+    const shift = (this.cmd.bottomInset() - this.topPadding) / 2;
+    const point = this.map.project([lat, lng], zoom).add([0, shift]);
+    return this.map.unproject(point, zoom);
+  }
+
+  private ensureVisible(device: { lat: number; lng: number }): void {
+    const inset = this.cmd.bottomInset();
+    const size = this.map.getSize();
+    const y = this.map.latLngToContainerPoint([device.lat, device.lng]).y;
+    const top = this.topPadding + 30;
+    const bottom = size.y - inset - 30;
+    if (y < top || y > bottom) {
+      this.map.panTo(this.offsetCenter(device.lat, device.lng, this.map.getZoom()), {
+        animate: true,
+        duration: 0.3,
+      });
+    }
   }
 
   ngAfterViewInit(): void {
@@ -145,9 +182,10 @@ export class MapComponent implements AfterViewInit, OnDestroy {
         className: 'gps-marker-wrapper',
         html: `
           <div class="gps-marker-container">
-            <span class="gps-marker ${isSelected ? 'selected' : ''} status-${device.status}">
+            <span class="gps-marker ${isSelected ? 'selected' : ''} status-${device.status}" data-track="marker-${device.id}">
               <i class="pi pi-car"></i>
-            </div>
+              <span class="gps-marker-badge">${statusIconSvg(device.status, 10)}</span>
+            </span>
             <span class="gps-marker-label">${device.label}</span>
           </div>
         `,
@@ -166,25 +204,10 @@ export class MapComponent implements AfterViewInit, OnDestroy {
         marker.setIcon(icon);
       }
 
-      const statusLabel =
-        device.status === 'online'
-          ? '🟢 En línea'
-          : device.status === 'idle'
-          ? '🟡 Detenido'
-          : '🔴 Sin señal';
       marker.bindPopup(
-        `<div style="min-width:180px;">
-          <div style="font-weight:700;font-size:14px;margin-bottom:4px;color:#0f172a;">${device.label}</div>
-          <div style="color:#475569;margin-bottom:6px;">${device.vehicle}</div>
-          <div style="display:flex;justify-content:space-between;font-size:12px;color:#334155;">
-            <span>Conductor:</span><strong>${device.driver ?? '—'}</strong>
-          </div>
-          <div style="display:flex;justify-content:space-between;font-size:12px;color:#334155;">
-            <span>Velocidad:</span><strong>${device.speed} km/h</strong>
-          </div>
-          <div style="display:flex;justify-content:space-between;font-size:12px;color:#334155;">
-            <span>Estado:</span><strong>${statusLabel}</strong>
-          </div>
+        `<div class="popup-vehicle">
+          <span class="popup-vehicle-id">${device.label}</span>
+          <span class="popup-vehicle-speed">${device.speed} km/h</span>
         </div>`
       );
     }

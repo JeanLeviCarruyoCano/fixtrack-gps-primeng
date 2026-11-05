@@ -1,3 +1,5 @@
+export type GpsStatus = 'online' | 'offline' | 'idle';
+
 export interface GpsDevice {
   id: string;
   label: string;
@@ -5,7 +7,7 @@ export interface GpsDevice {
   lng: number;
   speed: number;       // km/h
   heading: number;     // degrees
-  status: 'online' | 'offline' | 'idle';
+  status: GpsStatus;
   lastUpdate: Date;
   vehicle: string;
   driver?: string;
@@ -69,3 +71,56 @@ export type PanelView =
   | 'dashcam'
   | 'informe'
   | 'geocerca';
+
+export type AlertSeverity = 'critica' | 'aviso';
+
+export interface GpsAlert {
+  id: string;
+  deviceId: string;
+  severity: AlertSeverity;
+  title: string;
+  detail: string;
+  status: GpsStatus;
+  since: Date;
+}
+
+export const SPEED_LIMIT_KMH = 70;
+
+export function buildAlerts(devices: GpsDevice[]): GpsAlert[] {
+  const alerts: GpsAlert[] = [];
+  for (const d of devices) {
+    if (d.status === 'offline') {
+      alerts.push({
+        id: `${d.id}-sin-senal`,
+        deviceId: d.id,
+        severity: 'critica',
+        title: 'Sin señal',
+        detail: `${d.label} (${d.vehicle}) dejó de reportar su posición.`,
+        status: d.status,
+        since: d.lastUpdate,
+      });
+    } else if (d.status === 'idle') {
+      alerts.push({
+        id: `${d.id}-detenido`,
+        deviceId: d.id,
+        severity: 'aviso',
+        title: 'Vehículo detenido',
+        detail: `${d.label} (${d.vehicle}) permanece detenido.`,
+        status: d.status,
+        since: d.lastUpdate,
+      });
+    }
+    if (d.speed > SPEED_LIMIT_KMH) {
+      alerts.push({
+        id: `${d.id}-velocidad`,
+        deviceId: d.id,
+        severity: 'aviso',
+        title: 'Exceso de velocidad',
+        detail: `${d.label} circula a ${d.speed} km/h (límite ${SPEED_LIMIT_KMH} km/h).`,
+        status: d.status,
+        since: d.lastUpdate,
+      });
+    }
+  }
+  return alerts.sort((a, b) => (a.severity === b.severity ? 0 : a.severity === 'critica' ? -1 : 1));
+}
