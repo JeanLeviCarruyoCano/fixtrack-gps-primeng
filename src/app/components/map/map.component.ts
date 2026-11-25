@@ -12,7 +12,8 @@ import { CommonModule } from '@angular/common';
 import * as L from 'leaflet';
 import { GpsService } from '../../services/gps.service';
 import { MapCommandService } from '../../services/map-command.service';
-import { statusIconSvg } from '../../shared/status';
+import { STATUS_LABEL, statusIconSvg } from '../../shared/status';
+import { GpsStatus } from '../../models/gps.model';
 
 @Component({
   selector: 'app-map',
@@ -207,7 +208,7 @@ export class MapComponent implements AfterViewInit, OnDestroy {
       marker.bindPopup(
         `<div class="popup-vehicle">
           <span class="popup-vehicle-id">${device.label}</span>
-          <span class="popup-vehicle-speed">${device.speed} km/h</span>
+          <span class="popup-vehicle-status status-${device.status}">${this.statusLabel(device.status)}</span>
         </div>`
       );
     }
@@ -223,6 +224,10 @@ export class MapComponent implements AfterViewInit, OnDestroy {
 
   zoomOut(): void {
     this.map?.zoomOut();
+  }
+
+  private statusLabel(status: GpsStatus): string {
+    return STATUS_LABEL[status];
   }
 
   ngOnDestroy(): void {

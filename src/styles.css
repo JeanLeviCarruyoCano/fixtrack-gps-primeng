@@ -198,10 +198,52 @@ app-root {
   font-size: 0.875rem;
   font-weight: 700;
 }
-.popup-vehicle-speed {
+.popup-vehicle-status {
   color: var(--text-secondary);
   font-size: 0.8125rem;
   font-weight: 600;
+}
+.popup-vehicle-status.status-offline {
+  color: var(--status-offline);
+}
+
+.signal-card {
+  margin-bottom: 12px;
+  padding: 12px;
+  border: 1px solid var(--status-offline);
+  border-radius: 12px;
+  background: var(--status-offline-bg);
+  color: var(--text-primary);
+}
+.signal-card-head {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.signal-card-head i,
+.signal-card strong {
+  color: var(--status-offline);
+}
+.signal-card h3 {
+  margin: 0;
+  font-size: 0.875rem;
+}
+.signal-card p {
+  margin: 8px 0;
+  color: var(--text-secondary);
+  font-size: 0.75rem;
+}
+.signal-card strong {
+  display: block;
+  margin-top: 8px;
+  font-size: 0.75rem;
+}
+.signal-card ul {
+  margin: 4px 0 0;
+  padding-left: 18px;
+  color: var(--text-secondary);
+  font-size: 0.75rem;
+  line-height: 1.45;
 }
 
 :focus-visible {

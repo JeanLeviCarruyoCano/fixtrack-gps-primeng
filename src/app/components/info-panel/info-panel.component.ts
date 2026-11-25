@@ -60,7 +60,6 @@ const DRAG_THRESHOLD = 5;
         <header class="head">
           <app-status-badge [status]="dev.status" [iconOnly]="true"></app-status-badge>
           <h2>{{ dev.label }}</h2>
-          <span class="head-speed" data-track="sheet-speed">{{ dev.speed }} km/h</span>
           <button
             pButton
             type="button"
@@ -81,6 +80,31 @@ const DRAG_THRESHOLD = 5;
         (scroll)="updateScroll()"
       >
         <div class="content" #content [ngSwitch]="gps.activeView()">
+          <section
+            class="signal-card"
+            *ngIf="dev.status === 'offline'"
+            role="alert"
+            aria-labelledby="signal-card-title"
+            data-track="sin-senal-informacion"
+          >
+            <div class="signal-card-head">
+              <i class="pi pi-exclamation-triangle" aria-hidden="true"></i>
+              <h3 id="signal-card-title">Sin comunicación con el GPS</h3>
+            </div>
+            <p>La última posición recibida fue {{ dev.lastUpdate | date: 'medium' }}.</p>
+            <strong>Posibles causas</strong>
+            <ul>
+              <li>El dispositivo está fuera de cobertura.</li>
+              <li>El GPS está apagado o no tiene alimentación.</li>
+              <li>La SIM no tiene saldo o datos activos.</li>
+            </ul>
+            <strong>Qué puedes hacer</strong>
+            <ul>
+              <li>Verifica la alimentación y enciende el dispositivo.</li>
+              <li>Muévete a una zona con cobertura móvil.</li>
+              <li>Revisa la SIM y vuelve a consultar el estado.</li>
+            </ul>
+          </section>
           <div class="view" *ngSwitchCase="'control'">
             <div class="stat-grid">
               <div class="stat">
@@ -273,10 +297,7 @@ const DRAG_THRESHOLD = 5;
         white-space: nowrap;
       }
       .head-speed {
-        color: var(--text-secondary);
-        font-size: 0.9375rem;
-        font-weight: 700;
-        white-space: nowrap;
+        display: none;
       }
       :host ::ng-deep .close-btn {
         width: 28px !important;
